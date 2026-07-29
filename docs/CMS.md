@@ -10,67 +10,69 @@ Browser  →  Next.js /admin UI
                 │
         ┌───────┴────────┐
         ▼                ▼
- content/site.json    Supabase site_content (jsonb)
- (fallback / local)   + Storage cms-media (photos)
+ content/site.json    Hosted DB (jsonb document)
+ (fallback / local)   + object storage (photos / PDFs)
 ```
 
-Still **100% Next.js**. Supabase is the database/storage layer, not a second app.
+Still **100% Next.js**. The remote backend is optional storage, not a second app.
 
 ## File mode
 
-- Set `CMS_BACKEND=file` or omit Supabase secret
+- Set the CMS backend env to file mode, or omit remote credentials
 - Writes `content/site.json`
 
-## Supabase mode (implemented)
+## Hosted mode (Supabase)
 
-Uses **`@supabase/server`** (`createAdminClient` from `@supabase/server/core`) with **new** API keys:
+Uses **`@supabase/server`** (`createAdminClient` from `@supabase/server/core`) with the **new** API keys:
 
 | Env | Purpose |
 |-----|---------|
 | `SUPABASE_URL` | Project URL |
-| `SUPABASE_PUBLISHABLE_KEY` | Publishable key (`sb_publishable_…`) |
-| `SUPABASE_SECRET_KEY` | Secret key (`sb_secret_…`) for CMS write + Storage |
+| `SUPABASE_PUBLISHABLE_KEY` | Publishable key |
+| `SUPABASE_SECRET_KEY` | Secret key (CMS write + Storage) |
 | `SUPABASE_JWKS_URL` | Optional JWKS URL |
+| `CMS_BACKEND` | Prefer remote when set appropriately with keys present |
 
 ### 1) Run SQL once
 
-In Supabase → **SQL Editor**, run:
+In your project SQL Editor, run:
 
 [`supabase/cms-setup.sql`](../supabase/cms-setup.sql)
 
 Creates:
 
 - `public.site_content` (single-row JSON CMS)
-- Public bucket `cms-media` for instructor images
+- Public bucket `cms-media` for instructor images and resources
 
-### 2) Env (`.env.local`)
+### 2) Env (`.env.local` or host UI)
 
 ```bash
-CMS_BACKEND=supabase
-SUPABASE_URL=https://aojhvlcesnviqnytguge.supabase.co
-SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
-SUPABASE_SECRET_KEY=sb_secret_...          # full key from dashboard
-SUPABASE_JWKS_URL=https://aojhvlcesnviqnytguge.supabase.co/auth/v1/.well-known/jwks.json
-ADMIN_PASSWORD=your-strong-password
-CMS_SECRET=long-random-string
+# Required for admin login
+ADMIN_PASSWORD=<min-8-char-password>
+CMS_SECRET=<long-random-string>
+
+# Hosted CMS (example shape only — use your project values)
+CMS_BACKEND=<remote-or-file>
+SUPABASE_URL=<your-project-url>
+SUPABASE_PUBLISHABLE_KEY=<your-publishable-key>
+SUPABASE_SECRET_KEY=<your-secret-key>
+SUPABASE_JWKS_URL=<your-jwks-url>
 ```
 
-When URL + secret are set, the app prefers Supabase (unless `CMS_BACKEND=file`).
+When URL + secret are set, the app can use the hosted store (unless forced to file mode).
 
-### 3) Instructor photo upload
+### 3) Instructor photo / resource upload
 
-1. Open `/admin` → **Instructors**
-2. Choose an image (JPEG/PNG/WebP/GIF, max 5 MB)
-3. File is uploaded to Storage `cms-media/instructors/…`
-4. Public URL is filled into the instructor `photo` field
-5. Click **Save changes** to write the CMS document
-
-Public site shows the photo when `photo` is set; otherwise the silhouette fallback.
+1. Open `/admin`
+2. Instructors or Resource centre → choose a file  
+3. Upload stores under the media bucket (or `public/documents` in file mode)  
+4. Click **Save changes** to persist the CMS document  
 
 ## Security
 
 - `/admin` is password-gated (HTTP-only cookie, HMAC)
-- Never commit `.env.local` or secret keys
+- **Never** hardcode passwords or secret keys in source or docs
+- Never commit `.env.local`
 - Admin has `robots: noindex`
 
 ## Adding new editable fields

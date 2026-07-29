@@ -5,35 +5,26 @@
   command = "npm run build"
   publish = ".next"
 
-# Official Next.js runtime for App Router, API routes, SSR
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
 [build.environment]
-  NODE_VERSION = "20"
-  # Next.js 15+/16 needs sufficient memory on free builders
+  # Supabase JS 2.111+ expects Node 22+
+  NODE_VERSION = "22"
   NODE_OPTIONS = "--max-old-space-size=4096"
+  # Config keys whose *values* appear legitimately in docs/code (not secret material).
+  # Real secrets (SUPABASE_SECRET_KEY, CMS_SECRET, ADMIN_PASSWORD) must never appear in the repo.
+  SECRETS_SCAN_OMIT_KEYS = "CMS_BACKEND,SUPABASE_URL,SUPABASE_JWKS_URL,SUPABASE_PUBLISHABLE_KEY"
 
-# Optional: only include production deps cleanly
-# NPM_FLAGS = "--legacy-peer-deps"
+# ── Set these in Netlify UI (never commit secrets) ──
+# CMS_BACKEND          = supabase | file
+# SUPABASE_URL
+# SUPABASE_PUBLISHABLE_KEY
+# SUPABASE_SECRET_KEY
+# SUPABASE_JWKS_URL
+# ADMIN_PASSWORD       (min 8 chars; unique — do not use documented examples)
+# CMS_SECRET           (long random string)
 
-# ── Env vars (set in Netlify UI → Site settings → Environment variables) ──
-# Do NOT put secrets in this file.
-#
-# Required for CMS + Supabase on Netlify:
-#   CMS_BACKEND=supabase
-#   SUPABASE_URL
-#   SUPABASE_PUBLISHABLE_KEY
-#   SUPABASE_SECRET_KEY
-#   SUPABASE_JWKS_URL
-#   ADMIN_PASSWORD
-#   CMS_SECRET
-#
-# Optional enquiry email:
-#   RESEND_API_KEY
-#   ENQUIRY_NOTIFY_TO
-
-# Headers: cache static assets; don't cache HTML/RSC aggressively
 [[headers]]
   for = "/_next/static/*"
   [headers.values]

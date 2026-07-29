@@ -4,20 +4,33 @@ import { cookies } from "next/headers";
 const COOKIE = "mkombozi_cms_session";
 const MAX_AGE_SEC = 60 * 60 * 12; // 12 hours
 
+/**
+ * Session signing secret — must be set in production (Netlify env).
+ * Falls back only for local dev when CMS_SECRET is unset.
+ */
 function secret() {
-  return (
-    process.env.CMS_SECRET ||
-    process.env.ADMIN_PASSWORD ||
-    "dev-only-change-me-mkombozi"
-  );
+  const s = process.env.CMS_SECRET;
+  if (s && s.length >= 8) return s;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("CMS_SECRET environment variable is required in production.");
+  }
+  // Local-only fallback (must never match a real production secret)
+  return "local-dev-cms-signing-key-not-for-production";
 }
 
 function sign(payload: string) {
   return createHmac("sha256", secret()).update(payload).digest("hex");
 }
 
-export function getAdminPassword() {
-  return process.env.ADMIN_PASSWORD || "mkombozi-admin";
+/** Admin login password — always from env; no hardcoded default in source. */
+export function getAdminPassword(): string {
+  const pw = process.env.ADMIN_PASSWORD;
+  if (!pw || pw.length < 8) {
+    throw new Error(
+      "ADMIN_PASSWORD must be set (min 8 characters). Configure it in .env.local or your host env."
+    );
+  }
+  return pw;
 }
 
 export function createSessionValue(): string {
@@ -35,7 +48,12 @@ export function verifySessionValue(value: string | undefined): boolean {
   const exp = Number(expStr);
   if (!Number.isFinite(exp) || Date.now() > exp) return false;
   const body = `${ok}.${expStr}`;
-  const expected = sign(body);
+  let expected: string;
+  try {
+    expected = sign(body);
+  } catch {
+    return false;
+  }
   try {
     const a = Buffer.from(sig);
     const b = Buffer.from(expected);

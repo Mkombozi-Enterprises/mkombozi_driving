@@ -8,7 +8,7 @@ NTSA-registered driving school marketing site (Kakamega / Lumakanda). Built with
 - Global CSS design system (tokens in `src/app/globals.css`)
 - `next/font` — Barlow Condensed (display) + Figtree (body)
 - Client islands: header/menu, Journey Spine, FAQ, contact form, counters
-- CMS + optional Supabase (`@supabase/server`)
+- CMS + optional hosted database/storage
 - Netlify deploy config (`netlify.toml` + `@netlify/plugin-nextjs`)
 
 ## Signature
@@ -19,20 +19,20 @@ NTSA-registered driving school marketing site (Kakamega / Lumakanda). Built with
 
 ```bash
 npm install
+cp .env.example .env.local   # then fill ADMIN_PASSWORD, CMS_SECRET, etc.
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
 
-### CMS (Next.js admin + optional Supabase)
+### CMS
 
-Edit site content at **[http://localhost:3000/admin](http://localhost:3000/admin)**.
+Edit site content at **`/admin`**.
 
-- Default password: `mkombozi-admin` (set `ADMIN_PASSWORD` in `.env.local`)
+- Set `ADMIN_PASSWORD` and `CMS_SECRET` in `.env.local` (required; no defaults in source)
 - File store: `content/site.json` (fallback)
-- **Supabase**: run `supabase/cms-setup.sql`, set `SUPABASE_URL` + `SUPABASE_SECRET_KEY` in `.env.local`
-- Instructor photos: upload in Admin → Instructors (Storage bucket `cms-media`)
-- Docs: `docs/CMS.md`
+- Hosted CMS + photo uploads: see **[docs/CMS.md](docs/CMS.md)**
+- Docs: `content/README.md`
 
 ```bash
 npm run build
@@ -43,18 +43,18 @@ npm start
 
 1. Push this repo to GitHub/GitLab/Bitbucket  
 2. Netlify → **Import project** → select the repo  
-3. Build settings are in `netlify.toml` (command `npm run build`, Next.js plugin)  
-4. Set environment variables (Supabase + `ADMIN_PASSWORD` + `CMS_SECRET`) — see **[docs/NETLIFY.md](docs/NETLIFY.md)**  
+3. Build settings are in `netlify.toml` (command `npm run build`, Next.js plugin, **Node 22**)  
+4. Set environment variables — see **[docs/NETLIFY.md](docs/NETLIFY.md)**  
 5. Deploy  
 
-**Important on Netlify:** use `CMS_BACKEND=supabase` so CMS saves and enquiries don’t rely on ephemeral disk.
+**Important on Netlify:** configure the hosted CMS backend (not local file writes) so saves and uploads persist. See deploy docs.
 
 ## Project layout
 
 ```
 src/app/           # App Router (layout, page, admin, API)
 src/components/    # UI sections + interactive islands
-src/lib/cms/       # CMS store (file + Supabase), auth, uploads
+src/lib/cms/       # CMS store (file + remote), auth, uploads
 content/site.json  # File-based content mirror
 public/images/     # Founders, manager, hero, etc.
 public/documents/  # Resource centre PDFs
@@ -72,11 +72,11 @@ On viewports ≤980px: sticky bottom bar (**Book Lesson** + **WhatsApp**) and a 
 Optional email when an enquiry arrives — set in `.env.local`:
 
 ```
-RESEND_API_KEY=re_...
-ENQUIRY_NOTIFY_TO=you@example.com
+RESEND_API_KEY=...
+ENQUIRY_NOTIFY_TO=...
 ```
 
-Without these, enquiries still save to `data/enquiries.jsonl`.
+Without these, enquiries still save to `data/enquiries.jsonl` on hosts with writable disk.
 
 ## Enquiry API
 
@@ -87,12 +87,10 @@ Without these, enquiries still save to `data/enquiries.jsonl`.
   "name": "Judith Wasike",
   "phone": "0720575778",
   "email": "optional@email.com",
-  "course": "Class B – Automatic (Standard)",
+  "course": "B1 – Light vehicle",
   "message": "Weekend mornings preferred"
 }
 ```
-
-Valid submissions are appended to `data/enquiries.jsonl` (gitignored). Check the terminal for `[enquiry] received` logs. Swap the persist step for email/CRM later without changing the form.
 
 ## Hero photography
 
@@ -102,10 +100,8 @@ Drop a plate-safe yard or dual-control photo at:
 public/images/hero.jpg
 ```
 
-The home page detects the file and fills the media stage automatically. Until then, the stage uses road geometry + the founder photo inset.
-
 ## Next steps
 
-1. Add `public/images/hero.jpg` + plate-safe fleet photos
-2. Confirm live pricing and graduate reviews
-3. Optional: email notify from the enquiry route
+1. Confirm live pricing and graduate reviews  
+2. Add fleet photos under `public/images/`  
+3. Configure production env vars on your host  

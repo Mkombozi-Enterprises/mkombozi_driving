@@ -18,7 +18,16 @@ export async function cmsLogin(
   formData: FormData
 ): Promise<{ ok: boolean; error?: string }> {
   const password = String(formData.get("password") || "");
-  if (password !== getAdminPassword()) {
+  let expected: string;
+  try {
+    expected = getAdminPassword();
+  } catch {
+    return {
+      ok: false,
+      error: "Server is missing ADMIN_PASSWORD. Set it in the host environment.",
+    };
+  }
+  if (password !== expected) {
     return { ok: false, error: "Incorrect password." };
   }
   const jar = await cookies();

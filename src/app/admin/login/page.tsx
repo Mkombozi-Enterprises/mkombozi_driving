@@ -20,8 +20,8 @@ export default function CmsLoginPage() {
       <form className="cms-login-card" action={action}>
         <h1>Mkombozi CMS</h1>
         <p>
-          Edit site content without a separate backend. Default password is in{" "}
-          <code>ADMIN_PASSWORD</code> (or <code>mkombozi-admin</code> in dev).
+          Edit site content. Sign in with the password configured as{" "}
+          <code>ADMIN_PASSWORD</code> in your environment.
         </p>
         {state.error ? (
           <div className="cms-banner err" role="alert">
