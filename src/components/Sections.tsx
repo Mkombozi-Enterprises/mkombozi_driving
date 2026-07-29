@@ -433,8 +433,9 @@ export function InstructorsSection() {
           <span className="eyebrow">Meet The Team</span>
           <h2 className="headline">People who run the yard</h2>
           <p className="sub">
-            From school management to instructors with real road craft — the team behind
-            every lesson at Lumakanda.
+            {instructors.length === 1 && /manager/i.test(instructors[0]?.role || "")
+              ? "Start with school management — certified instructors will appear here as we add the full team."
+              : "From school management to instructors with real road craft — the team behind every lesson at Lumakanda."}
           </p>
         </Reveal>
         <div className="instructor-grid">

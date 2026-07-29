@@ -959,13 +959,14 @@ export function InstructorsFields({ content, setContent }: EditorProps) {
         </div>
       ) : null}
       <p style={{ color: "#9a9da6", fontSize: "0.85rem", marginTop: 0 }}>
-        Leave this empty to hide “Meet the team” on the public site. Add real staff
-        when you have photos and names. Photo upload uses Supabase Storage (
+        Keep the School Manager card. Add real instructors only when you have names
+        and photos — no placeholder people. Photo upload uses Supabase Storage (
         <code>cms-media</code>). Click <strong>Publish</strong> to put changes live.
       </p>
       {!content.instructors.length ? (
         <p className="cms-empty-hint">
-          No instructors yet — the section is hidden on the live site.
+          No team cards — the section is hidden on the live site. Add the manager or
+          an instructor to show “Meet the team”.
         </p>
       ) : null}
       {content.instructors.map((inst, i) => (

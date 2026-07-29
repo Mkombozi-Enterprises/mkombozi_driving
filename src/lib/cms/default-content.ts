@@ -240,8 +240,20 @@ export const defaultContent: SiteContent = {
       note: "16,000 KES inclusive of PDL booking, test booking, and extra coaching. Government medical / eCitizen / licence card fees may still apply separately.",
     },
   ],
-  // Empty until real instructors are added via CMS
-  instructors: [],
+  // School manager only until real instructors are added via CMS
+  instructors: [
+    {
+      id: "hudson-chepkuyi",
+      name: "Hudson Chepkuyi",
+      superpower: "Yard Operations Lead",
+      role: "School Manager",
+      years: 0,
+      quote:
+        "My job is to keep the yard running smoothly — schedules, vehicles, and every learner looked after from day one.",
+      audioSrc: "",
+      photo: "/images/HudsonChepkuyi.jpg",
+    },
+  ],
   faqs: [
     {
       id: "faq-classes",

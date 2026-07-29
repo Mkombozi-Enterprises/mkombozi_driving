@@ -93,7 +93,7 @@ export const CMS_MAP: CmsMapSection[] = [
     label: "Team / instructors",
     anchor: "#instructors",
     appearsOn: "Meet the team (hidden when empty)",
-    help: "Add real people here when ready. Empty list hides the whole section on the site.",
+    help: "School manager stays listed. Add real instructors when ready — placeholders should not be published.",
     order: 7,
   },
   {
