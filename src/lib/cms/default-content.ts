@@ -242,6 +242,17 @@ export const defaultContent: SiteContent = {
   ],
   instructors: [
     {
+      id: "hudson-chepkuyi",
+      name: "Hudson Chepkuyi",
+      superpower: "Yard Operations Lead",
+      role: "School Manager",
+      years: 0,
+      quote:
+        "My job is to keep the yard running smoothly — schedules, vehicles, and every learner looked after from day one.",
+      audioSrc: "",
+      photo: "/images/HudsonChepkuyi.jpg",
+    },
+    {
       id: "hadson-musamusi",
       name: "Hadson Musamusi",
       superpower: "The Highway Merge Coach",

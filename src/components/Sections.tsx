@@ -427,61 +427,74 @@ export function InstructorsSection() {
       <div className="container">
         <Reveal className="section-head center">
           <span className="eyebrow">Meet The Team</span>
-          <h2 className="headline">Instructors with superpowers</h2>
+          <h2 className="headline">People who run the yard</h2>
           <p className="sub">
-            Not job titles alone — the skills they&apos;re known for on Kakamega roads.
+            From school management to instructors with real road craft — the team behind
+            every lesson at Lumakanda.
           </p>
         </Reveal>
         <div className="instructor-grid">
-          {instructors.map((p, i) => (
-            <Reveal
-              key={p.id || p.name}
-              className="instructor-card"
-              delay={((i % 4) + 1) as 1 | 2 | 3 | 4}
-            >
-              {p.photo ? (
-                <div className="avatar-photo-wrap">
-                  <Image
-                    src={p.photo}
-                    alt={p.name}
-                    width={110}
-                    height={110}
-                    className="avatar-photo"
-                  />
-                  <span className="avatar-sil__badge" title="NTSA-certified instructor">
-                    NTSA
-                  </span>
-                </div>
-              ) : (
-                <div className="avatar-sil" aria-hidden>
-                  <svg viewBox="0 0 80 80" className="avatar-sil__svg">
-                    <circle cx="40" cy="40" r="40" fill="currentColor" opacity="0.12" />
-                    <circle cx="40" cy="30" r="14" fill="currentColor" opacity="0.45" />
-                    <path
-                      d="M16 68c4-14 14-22 24-22s20 8 24 22"
-                      fill="currentColor"
-                      opacity="0.45"
+          {instructors.map((p, i) => {
+            const isManager = /manager/i.test(p.role);
+            return (
+              <Reveal
+                key={p.id || p.name}
+                className={`instructor-card${isManager ? " instructor-card--manager" : ""}`}
+                delay={((i % 4) + 1) as 1 | 2 | 3 | 4}
+              >
+                {p.photo ? (
+                  <div className="avatar-photo-wrap">
+                    <Image
+                      src={p.photo}
+                      alt={p.name}
+                      width={110}
+                      height={110}
+                      className="avatar-photo"
                     />
-                  </svg>
-                  <span className="avatar-sil__badge" title="NTSA-certified instructor">
-                    NTSA
-                  </span>
+                    <span
+                      className={`avatar-sil__badge${isManager ? " avatar-sil__badge--manager" : ""}`}
+                      title={isManager ? "School Manager" : "NTSA-certified instructor"}
+                    >
+                      {isManager ? "MGR" : "NTSA"}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="avatar-sil" aria-hidden>
+                    <svg viewBox="0 0 80 80" className="avatar-sil__svg">
+                      <circle cx="40" cy="40" r="40" fill="currentColor" opacity="0.12" />
+                      <circle cx="40" cy="30" r="14" fill="currentColor" opacity="0.45" />
+                      <path
+                        d="M16 68c4-14 14-22 24-22s20 8 24 22"
+                        fill="currentColor"
+                        opacity="0.45"
+                      />
+                    </svg>
+                    <span
+                      className={`avatar-sil__badge${isManager ? " avatar-sil__badge--manager" : ""}`}
+                      title={isManager ? "School Manager" : "NTSA-certified instructor"}
+                    >
+                      {isManager ? "MGR" : "NTSA"}
+                    </span>
+                  </div>
+                )}
+                <h4>{p.name}</h4>
+                <p className="instructor-super">{p.superpower}</p>
+                <div className="instructor-role">
+                  {p.years > 0 ? `${p.years}+ years · ` : ""}
+                  {p.role}
                 </div>
-              )}
-              <h4>{p.name}</h4>
-              <p className="instructor-super">{p.superpower}</p>
-              <div className="instructor-role">
-                {p.years}+ years · {p.role}
-              </div>
-              <p className="bio">&ldquo;{p.quote}&rdquo;</p>
-              <AudioPill
-                src={p.audioSrc}
-                label={`Hear ${p.name.split(" ")[0]}`}
-                compact
-                fallbackNote="10s intro — drop MP3 in public/audio/"
-              />
-            </Reveal>
-          ))}
+                <p className="bio">&ldquo;{p.quote}&rdquo;</p>
+                {p.audioSrc ? (
+                  <AudioPill
+                    src={p.audioSrc}
+                    label={`Hear ${p.name.split(" ")[0]}`}
+                    compact
+                    fallbackNote="10s intro — drop MP3 in public/audio/"
+                  />
+                ) : null}
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>

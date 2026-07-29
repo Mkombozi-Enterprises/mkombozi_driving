@@ -1615,6 +1615,17 @@ body.menu-open {
   text-align: center;
 }
 
+.instructor-card--manager {
+  border-color: var(--indicator);
+  box-shadow: 0 0 0 1px rgba(233, 168, 32, 0.2), var(--shadow-sm);
+}
+
+.avatar-sil__badge--manager {
+  background: var(--highway) !important;
+  color: #fff !important;
+  letter-spacing: 0.06em;
+}
+
 .avatar-photo,
 .avatar-fallback {
   width: 110px;

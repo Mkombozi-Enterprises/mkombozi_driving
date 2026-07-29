@@ -4,10 +4,12 @@ NTSA-registered driving school marketing site (Kakamega / Lumakanda). Built with
 
 ## Stack
 
-- Next.js 15 + React 19 + TypeScript
+- Next.js 16 + React 19 + TypeScript
 - Global CSS design system (tokens in `src/app/globals.css`)
 - `next/font` — Barlow Condensed (display) + Figtree (body)
 - Client islands: header/menu, Journey Spine, FAQ, contact form, counters
+- CMS + optional Supabase (`@supabase/server`)
+- Netlify deploy config (`netlify.toml` + `@netlify/plugin-nextjs`)
 
 ## Signature
 
@@ -37,13 +39,27 @@ npm run build
 npm start
 ```
 
+## Deploy on Netlify (Free tier)
+
+1. Push this repo to GitHub/GitLab/Bitbucket  
+2. Netlify → **Import project** → select the repo  
+3. Build settings are in `netlify.toml` (command `npm run build`, Next.js plugin)  
+4. Set environment variables (Supabase + `ADMIN_PASSWORD` + `CMS_SECRET`) — see **[docs/NETLIFY.md](docs/NETLIFY.md)**  
+5. Deploy  
+
+**Important on Netlify:** use `CMS_BACKEND=supabase` so CMS saves and enquiries don’t rely on ephemeral disk.
+
 ## Project layout
 
 ```
-src/app/           # App Router (layout, page, globals)
+src/app/           # App Router (layout, page, admin, API)
 src/components/    # UI sections + interactive islands
-src/lib/site.ts    # Shared content (phone, courses, FAQs…)
-public/images/     # Founder photo + future fleet shots
+src/lib/cms/       # CMS store (file + Supabase), auth, uploads
+content/site.json  # File-based content mirror
+public/images/     # Founders, manager, hero, etc.
+public/documents/  # Resource centre PDFs
+supabase/          # SQL setup for CMS + storage
+netlify.toml       # Netlify Free-tier build config
 _legacy/           # Previous static HTML/CSS/JS (reference)
 ```
 

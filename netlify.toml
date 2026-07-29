@@ -1,0 +1,55 @@
+# Netlify Free tier — Next.js App Router
+# Docs: https://docs.netlify.com/frameworks/next-js/overview/
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# Official Next.js runtime for App Router, API routes, SSR
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build.environment]
+  NODE_VERSION = "20"
+  # Next.js 15+/16 needs sufficient memory on free builders
+  NODE_OPTIONS = "--max-old-space-size=4096"
+
+# Optional: only include production deps cleanly
+# NPM_FLAGS = "--legacy-peer-deps"
+
+# ── Env vars (set in Netlify UI → Site settings → Environment variables) ──
+# Do NOT put secrets in this file.
+#
+# Required for CMS + Supabase on Netlify:
+#   CMS_BACKEND=supabase
+#   SUPABASE_URL
+#   SUPABASE_PUBLISHABLE_KEY
+#   SUPABASE_SECRET_KEY
+#   SUPABASE_JWKS_URL
+#   ADMIN_PASSWORD
+#   CMS_SECRET
+#
+# Optional enquiry email:
+#   RESEND_API_KEY
+#   ENQUIRY_NOTIFY_TO
+
+# Headers: cache static assets; don't cache HTML/RSC aggressively
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/documents/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
