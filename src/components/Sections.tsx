@@ -422,6 +422,10 @@ export function PricingSection() {
 
 export function InstructorsSection() {
   const { instructors } = useSiteContent();
+
+  // Hidden until real team members are added in the CMS
+  if (!instructors.length) return null;
+
   return (
     <section className="section-pad bg-chalk" id="instructors">
       <div className="container">

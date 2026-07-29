@@ -9,9 +9,11 @@ import {
   isCmsAuthenticated,
   sessionCookieOptions,
 } from "@/lib/cms/auth";
+import { appendAudit, listAudit, summarizeContentDiff } from "@/lib/cms/audit";
 import { cmsBackend, loadContent, saveContent } from "@/lib/cms/store";
 import { uploadCmsImage, uploadCmsResource } from "@/lib/cms/upload";
 import type { SiteContent } from "@/lib/cms/types";
+import type { AuditEntry } from "@/lib/cms/audit";
 
 export async function cmsLogin(
   _prev: { ok: boolean; error?: string },
@@ -52,15 +54,29 @@ export async function getCmsContentAction(): Promise<
 }
 
 export async function saveCmsContentAction(
-  content: SiteContent
+  content: SiteContent,
+  meta?: { section?: string; note?: string }
 ): Promise<{ ok: true; content: SiteContent } | { ok: false; error: string }> {
   if (!(await isCmsAuthenticated())) {
     return { ok: false, error: "Unauthorized" };
   }
   try {
+    const before = await loadContent();
     const saved = await saveContent(content);
+    const diff = summarizeContentDiff(
+      before as unknown as Record<string, unknown>,
+      saved as unknown as Record<string, unknown>
+    );
+    await appendAudit({
+      actor: "site-manager",
+      action: "publish",
+      section: meta?.section || diff.sections.join(",") || "all",
+      summary: meta?.note || diff.summary,
+      detail: diff.sections.length ? `Fields: ${diff.sections.join(", ")}` : undefined,
+    });
     revalidatePath("/");
     revalidatePath("/admin");
+    revalidatePath("/preview");
     return { ok: true, content: saved };
   } catch (err) {
     console.error("[cms] save failed", err);
@@ -70,6 +86,23 @@ export async function saveCmsContentAction(
         err instanceof Error
           ? err.message
           : "Could not save content. Check Supabase setup or disk permissions.",
+    };
+  }
+}
+
+export async function listCmsAuditAction(): Promise<
+  { ok: true; entries: AuditEntry[] } | { ok: false; error: string }
+> {
+  if (!(await isCmsAuthenticated())) {
+    return { ok: false, error: "Unauthorized" };
+  }
+  try {
+    const entries = await listAudit(80);
+    return { ok: true, entries };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : "Could not load audit log.",
     };
   }
 }
@@ -95,6 +128,12 @@ export async function uploadInstructorPhotoAction(
 
   try {
     const { url } = await uploadCmsImage(file, "instructors");
+    await appendAudit({
+      actor: "site-manager",
+      action: "upload",
+      section: "instructors",
+      summary: `Uploaded instructor photo (${file.name})`,
+    });
     return { ok: true, url };
   } catch (err) {
     console.error("[cms] upload failed", err);
@@ -123,6 +162,13 @@ export async function uploadResourceFileAction(
 
   try {
     const { url, kind } = await uploadCmsResource(file);
+    await appendAudit({
+      actor: "site-manager",
+      action: "upload",
+      section: "resources",
+      summary: `Uploaded resource file (${file.name})`,
+      detail: kind,
+    });
     return { ok: true, url, kind };
   } catch (err) {
     console.error("[cms] resource upload failed", err);

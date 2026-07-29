@@ -61,12 +61,23 @@ SUPABASE_JWKS_URL=<your-jwks-url>
 
 When URL + secret are set, the app can use the hosted store (unless forced to file mode).
 
-### 3) Instructor photo / resource upload
+### 3) Draft preview, publish & audit
+
+1. Open `/admin` (password-gated)
+2. Edit any section — changes stay in a **local draft** until you press **Publish**
+3. Use **Phone / Desktop / Both** frames to preview the draft live (`/preview` via postMessage)
+4. Section map shows **where each field appears** on the public homepage
+5. **Publish** writes the document and appends an audit entry
+6. **Audit log** (sidebar) lists publishes and uploads (file: `content/audit.jsonl`, or Supabase `cms_audit_log` when hosted)
+
+Empty **Instructors** list hides the “Meet the team” section on the live site.
+
+### 4) Instructor photo / resource upload
 
 1. Open `/admin`
 2. Instructors or Resource centre → choose a file  
 3. Upload stores under the media bucket (or `public/documents` in file mode)  
-4. Click **Save changes** to persist the CMS document  
+4. Click **Publish** to persist the CMS document  
 
 ## Security
 

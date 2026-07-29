@@ -50,3 +50,19 @@ create policy "Public read cms-media"
   using (bucket_id = 'cms-media');
 
 -- Writes only via service/secret key (bypasses RLS) — no insert/update policies for anon.
+
+-- 4) Audit log for CMS publishes / uploads
+create table if not exists public.cms_audit_log (
+  id text primary key,
+  at timestamptz not null default now(),
+  actor text not null default 'site-manager',
+  action text not null,
+  section text,
+  summary text not null,
+  detail text
+);
+
+create index if not exists cms_audit_log_at_idx on public.cms_audit_log (at desc);
+
+alter table public.cms_audit_log enable row level security;
+-- Secret key bypasses RLS; no public write policies.

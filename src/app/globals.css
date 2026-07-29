@@ -3710,3 +3710,54 @@ body.menu-open {
     animation: none;
   }
 }
+
+/* =========================================================
+   CMS draft preview (/preview) — used inside admin iframes
+   ========================================================= */
+
+.cms-preview-waiting {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 32px 20px;
+  text-align: center;
+  background: var(--tarmac, #14161c);
+  color: var(--dust, #f0ebe0);
+  font-family: system-ui, sans-serif;
+}
+
+.cms-preview-waiting__hint {
+  margin: 0;
+  max-width: 28ch;
+  color: var(--slate, #5c6169);
+  font-size: 0.9rem;
+}
+
+.cms-preview-banner {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #e9a820;
+  color: #14161c;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+}
+
+.cms-preview-root {
+  min-height: 100vh;
+}
+
+.cms-preview-highlight {
+  outline: 3px solid #e9a820;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 8px rgba(233, 168, 32, 0.2);
+  transition: outline 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 4px;
+}

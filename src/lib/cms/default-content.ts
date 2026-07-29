@@ -240,59 +240,8 @@ export const defaultContent: SiteContent = {
       note: "16,000 KES inclusive of PDL booking, test booking, and extra coaching. Government medical / eCitizen / licence card fees may still apply separately.",
     },
   ],
-  instructors: [
-    {
-      id: "hudson-chepkuyi",
-      name: "Hudson Chepkuyi",
-      superpower: "Yard Operations Lead",
-      role: "School Manager",
-      years: 0,
-      quote:
-        "My job is to keep the yard running smoothly — schedules, vehicles, and every learner looked after from day one.",
-      audioSrc: "",
-      photo: "/images/HudsonChepkuyi.jpg",
-    },
-    {
-      id: "hadson-musamusi",
-      name: "Hadson Musamusi",
-      superpower: "The Highway Merge Coach",
-      role: "Category B (B1 / B3) & Defensive Driving",
-      years: 15,
-      quote:
-        "Rush hour on the Kakamega corridor doesn't scare me — and after a few lessons, it won't scare you either.",
-      audioSrc: "/audio/instructor-hadson.mp3",
-    },
-    {
-      id: "judith-fedha",
-      name: "Judith Fedha",
-      superpower: "The Parallel Parking Whisperer",
-      role: "Category B2 Automatic & Refresher",
-      years: 8,
-      quote:
-        "I've never had a student fail reversing at the Kakamega test yard — we practice until the car knows the space.",
-      audioSrc: "/audio/instructor-judith.mp3",
-    },
-    {
-      id: "peter-katana",
-      name: "Peter Katana",
-      superpower: "Mumias Road Expert",
-      role: "Category B1 — local roads & hill starts",
-      years: 12,
-      quote:
-        "I know every pothole season on Mumias Road. Light-vehicle drivers need that map in their bones.",
-      audioSrc: "/audio/instructor-peter.mp3",
-    },
-    {
-      id: "sarah-n",
-      name: "Sarah N.",
-      superpower: "Balance Before Speed",
-      role: "Category A (A1–A3) Motorcycles",
-      years: 6,
-      quote:
-        "Hello — I'm Sarah. I teach Category A. We start with balance and road craft, not show-offs.",
-      audioSrc: "/audio/instructor-sarah.mp3",
-    },
-  ],
+  // Empty until real instructors are added via CMS
+  instructors: [],
   faqs: [
     {
       id: "faq-classes",
