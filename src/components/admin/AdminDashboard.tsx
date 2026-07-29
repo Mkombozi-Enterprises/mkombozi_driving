@@ -57,7 +57,8 @@ export function AdminDashboard({ initial }: { initial: SiteContent }) {
   );
   const [pending, startTransition] = useTransition();
   const [navOpen, setNavOpen] = useState(false);
-  const [device, setDevice] = useState<DeviceMode>("phone");
+  // Prefer desktop frame on laptop widths; phone still available via toggle
+  const [device, setDevice] = useState<DeviceMode>("desktop");
   const [mobilePane, setMobilePane] = useState<MobilePane>("edit");
   const [previewOpen, setPreviewOpen] = useState(true);
   const [audit, setAudit] = useState<AuditEntry[]>([]);
@@ -229,6 +230,16 @@ export function AdminDashboard({ initial }: { initial: SiteContent }) {
         </div>
 
         <div className="cms-topbar__actions">
+          <button
+            type="button"
+            className="cms-btn cms-btn-ghost cms-hide-mobile"
+            onClick={() => {
+              setPreviewOpen((o) => !o);
+              if (!previewOpen) setMobilePane("preview");
+            }}
+          >
+            {previewOpen ? "Hide preview" : "Show preview"}
+          </button>
           {dirty ? (
             <button
               type="button"
@@ -286,7 +297,7 @@ export function AdminDashboard({ initial }: { initial: SiteContent }) {
         </aside>
 
         <main className="cms-workspace">
-          {/* Mobile pane switcher */}
+          {/* Always above panes so Edit/Preview tabs stay reachable on phones */}
           <div className="cms-mobile-tabs" role="tablist" aria-label="CMS panes">
             <button
               type="button"
@@ -320,175 +331,191 @@ export function AdminDashboard({ initial }: { initial: SiteContent }) {
             </button>
           </div>
 
-          {status ? (
+          <div className="cms-workspace-panes">
             <div
-              className={`cms-banner ${status.type === "ok" ? "ok" : "err"}`}
-              role="status"
+              className={`cms-editor-column${
+                mobilePane === "edit" || mobilePane === "map"
+                  ? " is-mobile-visible"
+                  : ""
+              }${mobilePane === "map" ? " show-map-only" : ""}`}
             >
-              {status.msg}
-            </div>
-          ) : null}
-
-          <div
-            className={`cms-editor-pane${
-              mobilePane === "edit" || mobilePane === "map" ? " is-mobile-visible" : ""
-            }${mobilePane === "map" ? " show-map-only" : ""}`}
-          >
-            <div className="cms-section-context">
-              <div>
-                <h2>{mapSection.label}</h2>
-                <p className="cms-section-context__appears">
-                  <strong>Shows on:</strong> {mapSection.appearsOn || "Admin only"}
-                </p>
-                <p className="cms-section-context__help">{mapSection.help}</p>
-              </div>
-              {mapSection.anchor ? (
-                <button
-                  type="button"
-                  className="cms-btn cms-btn-ghost cms-btn-sm"
-                  onClick={() => {
-                    setPreviewOpen(true);
-                    setMobilePane("preview");
-                    broadcastHighlight(mapSection.anchor);
-                  }}
+              {status ? (
+                <div
+                  className={`cms-banner ${status.type === "ok" ? "ok" : "err"}`}
+                  role="status"
                 >
-                  Jump in preview {mapSection.anchor}
-                </button>
+                  {status.msg}
+                </div>
               ) : null}
-            </div>
 
-            {/* Road-map strip for orientation */}
-            <div
-              className={`cms-roadmap${mobilePane === "map" ? " is-expanded" : ""}`}
-              aria-label="Homepage section map"
-            >
-              <p className="cms-roadmap__title">Homepage road</p>
-              <ol className="cms-roadmap__list">
-                {[...EDIT_SECTIONS]
-                  .sort((a, b) => a.order - b.order)
-                  .map((s) => (
-                    <li key={s.id}>
-                      <button
-                        type="button"
-                        className={section === s.id ? "active" : ""}
-                        onClick={() => selectSection(s.id)}
-                      >
-                        <span className="cms-roadmap__km">{s.order}</span>
-                        <span>{s.label}</span>
-                      </button>
-                    </li>
-                  ))}
-              </ol>
-            </div>
+              <div className="cms-editor-pane">
+                <div className="cms-section-context">
+                  <div>
+                    <h2>{mapSection.label}</h2>
+                    <p className="cms-section-context__appears">
+                      <strong>Shows on:</strong>{" "}
+                      {mapSection.appearsOn || "Admin only"}
+                    </p>
+                    <p className="cms-section-context__help">{mapSection.help}</p>
+                  </div>
+                  {mapSection.anchor ? (
+                    <button
+                      type="button"
+                      className="cms-btn cms-btn-ghost cms-btn-sm"
+                      onClick={() => {
+                        setPreviewOpen(true);
+                        setMobilePane("preview");
+                        broadcastHighlight(mapSection.anchor);
+                      }}
+                    >
+                      Jump in preview {mapSection.anchor}
+                    </button>
+                  ) : null}
+                </div>
 
-            {section === "audit" ? (
-              <AuditPanel
-                entries={audit}
-                loading={auditLoading || pending}
-                error={auditErr}
-                onRefresh={loadAudit}
-              />
-            ) : (
-              <SectionEditor
-                section={section}
-                content={content}
-                setContent={setContent}
-              />
-            )}
-          </div>
+                <div
+                  className={`cms-roadmap${
+                    mobilePane === "map" ? " is-expanded" : ""
+                  }`}
+                  aria-label="Homepage section map"
+                >
+                  <p className="cms-roadmap__title">Homepage road</p>
+                  <ol className="cms-roadmap__list">
+                    {[...EDIT_SECTIONS]
+                      .sort((a, b) => a.order - b.order)
+                      .map((s) => (
+                        <li key={s.id}>
+                          <button
+                            type="button"
+                            className={section === s.id ? "active" : ""}
+                            onClick={() => selectSection(s.id)}
+                          >
+                            <span className="cms-roadmap__km">{s.order}</span>
+                            <span>{s.label}</span>
+                          </button>
+                        </li>
+                      ))}
+                  </ol>
+                </div>
 
-          <div
-            className={`cms-preview-pane${previewOpen ? " is-open" : ""}${
-              mobilePane === "preview" ? " is-mobile-visible" : ""
-            }`}
-          >
-            <div className="cms-preview-toolbar">
-              <div className="cms-device-toggle" role="group" aria-label="Preview device">
-                <button
-                  type="button"
-                  className={device === "phone" ? "active" : ""}
-                  onClick={() => setDevice("phone")}
-                >
-                  Phone
-                </button>
-                <button
-                  type="button"
-                  className={device === "desktop" ? "active" : ""}
-                  onClick={() => setDevice("desktop")}
-                >
-                  Desktop
-                </button>
-                <button
-                  type="button"
-                  className={device === "split" ? "active" : ""}
-                  onClick={() => setDevice("split")}
-                >
-                  Both
-                </button>
-              </div>
-              <div className="cms-preview-toolbar__right">
-                {dirty ? (
-                  <span className="cms-pill cms-pill--draft">Draft · not live</span>
+                {section === "audit" ? (
+                  <AuditPanel
+                    entries={audit}
+                    loading={auditLoading || pending}
+                    error={auditErr}
+                    onRefresh={loadAudit}
+                  />
                 ) : (
-                  <span className="cms-pill cms-pill--live">Matches live</span>
+                  <SectionEditor
+                    section={section}
+                    content={content}
+                    setContent={setContent}
+                  />
                 )}
-                <button
-                  type="button"
-                  className="cms-btn cms-btn-ghost cms-btn-sm cms-hide-desktop"
-                  onClick={() => setMobilePane("edit")}
-                >
-                  Back to edit
-                </button>
-                <button
-                  type="button"
-                  className="cms-btn cms-btn-ghost cms-btn-sm cms-hide-mobile"
-                  onClick={() => setPreviewOpen((o) => !o)}
-                >
-                  {previewOpen ? "Hide preview" : "Show preview"}
-                </button>
               </div>
             </div>
 
             <div
-              className={`cms-device-stage device-${device}${
-                showPhone && showDesktop ? " is-split" : ""
+              className={`cms-preview-pane${previewOpen ? " is-open" : ""}${
+                mobilePane === "preview" ? " is-mobile-visible" : ""
               }`}
             >
-              {showPhone ? (
-                <div className="cms-device cms-device--phone">
-                  <div className="cms-device__chrome">
-                    <span className="cms-device__notch" />
-                    <span className="cms-device__label">Phone · draft</span>
-                  </div>
-                  <iframe
-                    ref={phoneRef}
-                    title="Phone draft preview"
-                    src="/preview"
-                    className="cms-device__frame"
-                    onLoad={broadcastContent}
-                  />
+              <div className="cms-preview-toolbar">
+                <div
+                  className="cms-device-toggle"
+                  role="group"
+                  aria-label="Preview device"
+                >
+                  <button
+                    type="button"
+                    className={device === "phone" ? "active" : ""}
+                    onClick={() => setDevice("phone")}
+                  >
+                    Phone
+                  </button>
+                  <button
+                    type="button"
+                    className={device === "desktop" ? "active" : ""}
+                    onClick={() => setDevice("desktop")}
+                  >
+                    Desktop
+                  </button>
+                  <button
+                    type="button"
+                    className={device === "split" ? "active" : ""}
+                    onClick={() => setDevice("split")}
+                  >
+                    Both
+                  </button>
                 </div>
-              ) : null}
-
-              {showDesktop ? (
-                <div className="cms-device cms-device--desktop">
-                  <div className="cms-device__chrome cms-device__chrome--desktop">
-                    <span className="cms-device__dots" aria-hidden>
-                      <i />
-                      <i />
-                      <i />
+                <div className="cms-preview-toolbar__right">
+                  {dirty ? (
+                    <span className="cms-pill cms-pill--draft">
+                      Draft · not live
                     </span>
-                    <span className="cms-device__url">mkombozi · draft preview</span>
-                  </div>
-                  <iframe
-                    ref={desktopRef}
-                    title="Desktop draft preview"
-                    src="/preview"
-                    className="cms-device__frame"
-                    onLoad={broadcastContent}
-                  />
+                  ) : (
+                    <span className="cms-pill cms-pill--live">Matches live</span>
+                  )}
+                  <button
+                    type="button"
+                    className="cms-btn cms-btn-ghost cms-btn-sm cms-hide-desktop"
+                    onClick={() => setMobilePane("edit")}
+                  >
+                    Back to edit
+                  </button>
+                  <button
+                    type="button"
+                    className="cms-btn cms-btn-ghost cms-btn-sm cms-hide-mobile"
+                    onClick={() => setPreviewOpen((o) => !o)}
+                  >
+                    {previewOpen ? "Hide preview" : "Show preview"}
+                  </button>
                 </div>
-              ) : null}
+              </div>
+
+              <div
+                className={`cms-device-stage device-${device}${
+                  showPhone && showDesktop ? " is-split" : ""
+                }`}
+              >
+                {showPhone ? (
+                  <div className="cms-device cms-device--phone">
+                    <div className="cms-device__chrome">
+                      <span className="cms-device__notch" />
+                      <span className="cms-device__label">Phone · draft</span>
+                    </div>
+                    <iframe
+                      ref={phoneRef}
+                      title="Phone draft preview"
+                      src="/preview"
+                      className="cms-device__frame"
+                      onLoad={broadcastContent}
+                    />
+                  </div>
+                ) : null}
+
+                {showDesktop ? (
+                  <div className="cms-device cms-device--desktop">
+                    <div className="cms-device__chrome cms-device__chrome--desktop">
+                      <span className="cms-device__dots" aria-hidden>
+                        <i />
+                        <i />
+                        <i />
+                      </span>
+                      <span className="cms-device__url">
+                        mkombozi · draft preview
+                      </span>
+                    </div>
+                    <iframe
+                      ref={desktopRef}
+                      title="Desktop draft preview"
+                      src="/preview"
+                      className="cms-device__frame"
+                      onLoad={broadcastContent}
+                    />
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
         </main>
