@@ -13,10 +13,12 @@ import {
   IconWhatsApp,
 } from "./Icons";
 import {
-  courses,
+  addOns,
   faqs,
   fleet,
+  founderQuote,
   instructors,
+  licenceGroups,
   packages,
   routeStops,
   site,
@@ -78,8 +80,8 @@ export function AboutSection() {
               <IconWallet />
               <h4>Transparent Pricing</h4>
               <p>
-                Clear packages, flexible instalments, and M-Pesa accepted. No hidden
-                school fees — we list government extras upfront.
+                One package at 16,000 KES — PDL booking, test booking, and extra coaching
+                included. M-Pesa accepted.
               </p>
             </Reveal>
           </div>
@@ -94,27 +96,57 @@ export function FounderSection() {
     <section className="founder-note bg-chalk-dim">
       <div className="container">
         <div className="founder-layout">
-          <Reveal className="founder-wrap">
-            <Image
-              src="/images/founder.jpeg"
-              alt="Founders of Mkombozi Driving School"
-              width={150}
-              height={110}
-              className="founder-photo"
-            />
+          <Reveal className="founder-block">
+            <span className="eyebrow">A Word From Our Founders</span>
+
+            <div className="founder-portraits" role="group" aria-label="Founders">
+              <figure className="founder-portrait">
+                <div className="founder-portrait__frame">
+                  <Image
+                    src="/images/EdithFedha.png"
+                    alt="Edith Fedha, Co-founder of Mkombozi Driving School"
+                    width={400}
+                    height={480}
+                    className="founder-portrait__img"
+                    sizes="(max-width: 640px) 45vw, 180px"
+                  />
+                  <span className="founder-portrait__tick" aria-hidden />
+                </div>
+                <figcaption>
+                  <strong>Edith Fedha</strong>
+                  <span>Founder &amp; Director</span>
+                </figcaption>
+              </figure>
+
+              <figure className="founder-portrait founder-portrait--offset">
+                <div className="founder-portrait__frame">
+                  <Image
+                    src="/images/EdwardMusamusi.png"
+                    alt="Edward Musamusi, Co-founder of Mkombozi Driving School"
+                    width={400}
+                    height={480}
+                    className="founder-portrait__img"
+                    sizes="(max-width: 640px) 45vw, 180px"
+                  />
+                  <span className="founder-portrait__tick" aria-hidden />
+                </div>
+                <figcaption>
+                  <strong>Edward Musamusi</strong>
+                  <span>Founder &amp; Director</span>
+                </figcaption>
+              </figure>
+            </div>
+
             <div className="founder-text">
-              <span className="eyebrow">A Word From Our Founders</span>
               <p className="founder-quote">
-                &ldquo;Mangelepa — <em>Marching Forward.</em>&rdquo; That&apos;s the phrase we
-                live by — and the same spirit we want every learner to drive away with.
+                &ldquo;<em>{founderQuote}</em>&rdquo;
               </p>
               <p className="founder-name">
-                — Bishop Edward Musamusi &amp; Miss Sikuche Musamusi, Founders and
-                Directors
+                — Edith Fedha &amp; Bishop Edward Musamusi, Founders and Directors
               </p>
               <AudioPill
                 src={site.founderAudioSrc}
-                label="Press play to hear from Mangelepa"
+                label="Press play to hear from our founders"
                 fallbackNote="Record a 30s phone voice note → public/audio/founder-mangelepa.mp3"
                 className="founder-audio"
               />
@@ -168,29 +200,71 @@ export function CoursesSection() {
         <div>
           <Reveal className="section-head">
             <span className="eyebrow">Our Courses</span>
-            <h2 className="headline">A course for every kind of driver</h2>
+            <h2 className="headline">Category A &amp; B only</h2>
             <p className="sub">
-              NTSA groups Kenyan licences into classes based on the vehicle you&apos;ll
-              drive. Tell us where you&apos;re headed — Class A on two wheels or Class D on
-              Mumias Road matatus.
+              We train NTSA Category A (motorcycles) and Category B (light vehicles) —
+              from mopeds and boda to passenger cars. We do not offer Class C trucks or
+              Class D PSV matatu/bus courses.
             </p>
           </Reveal>
         </div>
         <YardStatus />
-        <div className="service-grid">
-          {courses.map((c, i) => (
-            <Reveal
-              key={c.title}
-              className="service-card"
-              delay={((i % 4) + 1) as 1 | 2 | 3 | 4}
-            >
-              <CourseIcon name={c.icon} />
-              <span className="service-tag">{c.tag}</span>
-              <h4>{c.title}</h4>
-              <p>{c.body}</p>
-              <p className="service-duration">{c.duration}</p>
+
+        {licenceGroups.map((group) => (
+          <div key={group.classKey} className="licence-group">
+            <Reveal className="licence-group__head">
+              <h3 className="licence-group__title">{group.title}</h3>
+              <p className="licence-group__sub">{group.subtitle}</p>
             </Reveal>
-          ))}
+            <div className="service-grid service-grid--licence">
+              {group.courses.map((c, i) => (
+                <Reveal
+                  key={c.code}
+                  className="service-card service-card--licence"
+                  delay={((i % 3) + 1) as 1 | 2 | 3}
+                >
+                  <CourseIcon name={c.icon} />
+                  <span className="service-tag">{c.code}</span>
+                  <h4>
+                    {c.code} — {c.name}
+                  </h4>
+                  <p>{c.description}</p>
+                  <div className="service-reqs">
+                    <p className="service-reqs__label">Requirements</p>
+                    <ul>
+                      {c.requirements.map((r) => (
+                        <li key={r}>{r}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        <div className="licence-group">
+          <Reveal className="licence-group__head">
+            <h3 className="licence-group__title">Add-ons</h3>
+            <p className="licence-group__sub">
+              Optional skills alongside your licence course — strengthen safety, care, and
+              understanding of the machine.
+            </p>
+          </Reveal>
+          <div className="service-grid service-grid--licence">
+            {addOns.map((a, i) => (
+              <Reveal
+                key={a.title}
+                className="service-card"
+                delay={((i % 3) + 1) as 1 | 2 | 3}
+              >
+                <CourseIcon name={a.icon} />
+                <span className="service-tag">{a.tag}</span>
+                <h4>{a.title}</h4>
+                <p>{a.body}</p>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -332,62 +406,48 @@ export function FleetSection() {
 }
 
 export function PricingSection() {
+  const pkg = packages[0];
+
   return (
     <section className="section-pad bg-chalk-dim" id="pricing">
       <div className="container">
         <Reveal className="section-head center">
-          <span className="eyebrow">Packages</span>
-          <h2 className="headline">Honest packages, clear starting prices</h2>
+          <span className="eyebrow">Pricing</span>
+          <h2 className="headline">One clear package</h2>
           <p className="sub">
-            Figures below are <strong>from</strong> prices for training packages.
-            Government fees (medical, eCitizen, licence card) are listed separately —
-            confirm your quote with us before you pay.
+            A single training package for Category A or B — no maze of tiers. Government
+            medical / eCitizen / licence card fees may still apply separately.
           </p>
         </Reveal>
-        <div className="price-grid">
-          {packages.map((pkg, i) => (
-            <Reveal
-              key={pkg.name}
-              className={`price-card${pkg.featured ? " featured" : ""}`}
-              delay={((i % 3) + 1) as 1 | 2 | 3}
+        <div className="price-grid price-grid--single">
+          <Reveal className="price-card featured" delay={1}>
+            <span className="price-badge">All-in training</span>
+            <h4>{pkg.name}</h4>
+            <span className="price-class">{pkg.classLabel}</span>
+            <div className="price-amount">
+              {pkg.price} <span>KES</span>
+            </div>
+            <p className="price-duration">{pkg.duration}</p>
+            <div className="price-split">
+              <p className="price-split-label">What&apos;s included</p>
+              <ul className="price-list">
+                {pkg.included.map((f) => (
+                  <li key={f}>
+                    <IconCheck size="sm" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <p className="price-package-note">{pkg.note}</p>
+            </div>
+            <a
+              href="#contact"
+              className="btn btn-primary btn-block"
+              data-choose-course={pkg.courseValue}
             >
-              {pkg.featured && <span className="price-badge">Most Popular</span>}
-              <h4>{pkg.name}</h4>
-              <span className="price-class">{pkg.classLabel}</span>
-              <div className="price-amount">
-                <span className="price-from">From</span> {pkg.fromPrice}{" "}
-                <span>KES</span>
-              </div>
-              <p className="price-duration">Typical pace: {pkg.duration}</p>
-              <div className="price-split">
-                <p className="price-split-label">What&apos;s included</p>
-                <ul className="price-list">
-                  {pkg.included.map((f) => (
-                    <li key={f}>
-                      <IconCheck size="sm" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <p className="price-split-label">Usually extra (not school profit)</p>
-                <ul className="price-list price-list--muted">
-                  {pkg.extras.map((f) => (
-                    <li key={f}>
-                      <span className="price-extra-dot" aria-hidden />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <a
-                href="#contact"
-                className={`btn btn-block ${pkg.featured ? "btn-primary" : "btn-ghost on-light"}`}
-                data-choose-course={pkg.courseValue}
-              >
-                Request a quote
-              </a>
-            </Reveal>
-          ))}
+              Enrol at 16,000 KES
+            </a>
+          </Reveal>
         </div>
       </div>
     </section>

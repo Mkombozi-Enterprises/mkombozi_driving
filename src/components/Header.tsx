@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { IconBrand, IconClose, IconMenu } from "./Icons";
+import { IconClose, IconMenu } from "./Icons";
+import { BrandLogo } from "./BrandLogo";
 import { navLinks, site } from "@/lib/site";
 
 export function Header() {
@@ -43,7 +44,7 @@ export function Header() {
       <header className={`site-header${scrolled ? " is-scrolled" : ""}`} id="site-header">
         <div className="nav-inner">
           <a href="#home" className="brand">
-            <IconBrand />
+            <BrandLogo size={42} priority />
             <span className="brand-text">
               <b>Mkombozi</b>
               <span>Driving School</span>
@@ -84,11 +85,13 @@ export function Header() {
         aria-hidden={!menuOpen}
       >
         <div className="mobile-menu-top">
-          <span className="brand-text" style={{ color: "#fff" }}>
-            <b style={{ fontFamily: "var(--font-display)", fontSize: "1.2rem" }}>
-              Mkombozi
-            </b>
-          </span>
+          <a href="#home" className="brand" onClick={close}>
+            <BrandLogo size={36} />
+            <span className="brand-text">
+              <b>Mkombozi</b>
+              <span>Driving School</span>
+            </span>
+          </a>
           <button
             className="close-btn"
             type="button"

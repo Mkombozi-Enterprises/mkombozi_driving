@@ -7,7 +7,7 @@ export function JsonLd() {
     "@type": "DrivingSchool",
     name: site.name,
     description:
-      "NTSA-certified driving school in Lumakanda, Kakamega County — manual, automatic, motorcycle, truck and PSV training.",
+      "NTSA-certified driving school in Lumakanda, Kakamega County — Category A (motorcycles) and Category B (light vehicles) training.",
     url: "https://mkombozidrivingschool.co.ke",
     telephone: site.phoneTel,
     email: site.email,

@@ -57,6 +57,9 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
+  /* Anchor jumps clear sticky util + header */
+  scroll-padding-top: var(--nav-stack, 7.5rem);
 }
 
 body {
@@ -66,6 +69,8 @@ body {
   background: var(--dust);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  max-width: 100vw;
 }
 
 img,
@@ -348,20 +353,20 @@ h2.headline {
 }
 
 /* ============ HEADER / NAV ============ */
+/* Always dark: header sits above the page (not over the hero), so transparent
+   showed body chalk + white text = unreadable before scroll. */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: transparent;
-  transition:
-    background 0.25s ease,
-    box-shadow 0.25s ease;
+  background: rgba(11, 12, 15, 0.97);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(247, 244, 236, 0.06);
+  transition: box-shadow 0.25s ease;
 }
 
 .site-header.is-scrolled {
-  background: rgba(20, 22, 28, 0.96);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
-  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
 }
 
 .nav-inner {
@@ -379,18 +384,24 @@ h2.headline {
   align-items: center;
   gap: 10px;
   color: var(--white);
+  min-width: 0;
+  flex-shrink: 1;
 }
 
-.brand .icon {
-  color: var(--indicator);
-  width: 32px;
-  height: 32px;
+.brand-logo {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .brand-text {
   display: flex;
   flex-direction: column;
   line-height: 1.05;
+  min-width: 0;
 }
 
 .brand-text b {
@@ -402,11 +413,12 @@ h2.headline {
 
 .brand-text span {
   font-size: 0.62rem;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.14em;
   color: var(--indicator);
   text-transform: uppercase;
   font-family: var(--font-body);
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .nav-links {
@@ -507,6 +519,11 @@ body.menu-open {
 }
 
 /* ============ JOURNEY SPINE (signature) ============ */
+/* Sit under sticky util+header so step 01 is never covered */
+:root {
+  --nav-stack: 7.5rem; /* util bar + sticky header */
+}
+
 .journey-spine {
   display: none;
 }
@@ -516,18 +533,18 @@ body.menu-open {
     display: block;
     position: fixed;
     left: 0;
-    top: 0;
+    top: var(--nav-stack);
     bottom: 0;
     width: var(--spine-width);
-    z-index: 90;
+    z-index: 40; /* below sticky header (100) */
     pointer-events: none;
   }
 
   .journey-spine__track {
     position: absolute;
     left: 50%;
-    top: 12vh;
-    bottom: 10vh;
+    top: 1.25rem;
+    bottom: 8vh;
     width: 3px;
     transform: translateX(-50%);
     background: repeating-linear-gradient(
@@ -541,9 +558,10 @@ body.menu-open {
   .journey-spine__progress {
     position: absolute;
     left: 50%;
-    top: 12vh;
+    top: 1.25rem;
     width: 3px;
     height: 0;
+    max-height: calc(100% - 1.25rem - 8vh);
     transform: translateX(-50%);
     background: var(--indicator);
     opacity: 0.95;
@@ -566,7 +584,10 @@ body.menu-open {
 
   .journey-spine__posts {
     position: absolute;
-    inset: 12vh 0 10vh;
+    top: 1.25rem;
+    bottom: 8vh;
+    left: 0;
+    right: 0;
     pointer-events: auto;
   }
 
@@ -1082,43 +1103,94 @@ body.menu-open {
 
 /* ============ FOUNDER ============ */
 .founder-note {
-  padding: 56px 0;
+  padding: clamp(48px, 7vw, 72px) 0;
 }
 
-.founder-wrap {
+.founder-block {
+  min-width: 0;
+}
+
+.founder-portraits {
   display: flex;
-  align-items: center;
-  gap: 28px;
-  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: clamp(12px, 3vw, 22px);
+  margin: 18px 0 26px;
 }
 
-.founder-photo {
-  width: 150px;
-  height: 110px;
-  flex-shrink: 0;
-  display: block;
+.founder-portrait {
+  margin: 0;
+  flex: 0 1 180px;
+  max-width: 200px;
+}
+
+.founder-portrait--offset {
+  transform: translateY(-10px);
+}
+
+.founder-portrait__frame {
+  position: relative;
   border-radius: var(--radius-md);
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: var(--tarmac);
+  box-shadow:
+    0 12px 32px rgba(20, 20, 22, 0.14),
+    inset 0 0 0 1px rgba(233, 168, 32, 0.25);
+}
+
+.founder-portrait__img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  object-position: center 20%;
-  background: var(--dust-dim);
-  border: 3px solid var(--white);
-  box-shadow: var(--shadow-sm);
+  object-position: center top;
+  display: block;
+}
+
+.founder-portrait__tick {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 14px;
+  height: 14px;
+  border-top: 3px solid var(--indicator);
+  border-left: 3px solid var(--indicator);
+  opacity: 0.9;
+}
+
+.founder-portrait figcaption {
+  margin-top: 10px;
+  text-align: left;
+}
+
+.founder-portrait figcaption strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.founder-portrait figcaption span {
+  font-size: 0.8rem;
+  color: var(--highway);
+  font-weight: 600;
 }
 
 .founder-text {
   flex: 1;
-  min-width: 240px;
+  min-width: 0;
 }
 
 .founder-quote {
   font-family: var(--font-display);
-  font-size: clamp(1.15rem, 2.1vw, 1.45rem);
+  font-size: clamp(1.25rem, 2.4vw, 1.65rem);
   color: var(--ink);
-  max-width: 56ch;
+  max-width: 28ch;
   text-transform: none;
   font-weight: 500;
   letter-spacing: 0.01em;
-  line-height: 1.3;
+  line-height: 1.25;
 }
 
 .founder-quote em {
@@ -1128,7 +1200,7 @@ body.menu-open {
 }
 
 .founder-name {
-  margin-top: 10px;
+  margin-top: 12px;
   font-size: 0.88rem;
   color: var(--slate);
   font-weight: 600;
@@ -1431,6 +1503,19 @@ body.menu-open {
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   align-items: stretch;
+}
+
+.price-grid--single {
+  grid-template-columns: minmax(0, 420px);
+  justify-content: center;
+}
+
+.price-package-note {
+  margin-top: 14px;
+  font-size: 0.88rem;
+  color: var(--slate);
+  line-height: 1.45;
+  font-style: italic;
 }
 
 .price-card {
@@ -1830,7 +1915,92 @@ body.menu-open {
 .site-footer {
   background: var(--tarmac-deep);
   color: #b0b3bb;
-  padding: clamp(56px, 8vw, 80px) 0 26px;
+  padding: 0;
+  /* Full-bleed band: no outer padding so logo panel hits viewport edges */
+}
+
+/*
+  Left logo panel: true viewport left edge → text column.
+  Stretches full footer height (top + bottom of footer band).
+*/
+.footer-band {
+  display: grid;
+  grid-template-columns: minmax(120px, 22vw) minmax(0, 1fr);
+  align-items: stretch;
+  width: 100%;
+  min-height: clamp(280px, 42vh, 420px);
+}
+
+.footer-logo-panel {
+  position: relative;
+  display: block;
+  align-self: stretch;
+  /* Grid stretch: panel height = full footer band (matches content column) */
+  min-height: 100%;
+  background: #050607;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Absolute fill — logo covers the entire left slab */
+.footer-logo-panel__fill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.footer-logo-panel__img {
+  object-fit: cover;
+  object-position: center center;
+}
+
+/* Soft vignette so logo feels grounded, not floating */
+.footer-logo-panel__grain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 40% 45%, transparent 30%, rgba(0, 0, 0, 0.45) 100%),
+    linear-gradient(90deg, transparent 70%, rgba(11, 12, 15, 0.55) 100%);
+}
+
+/* Amber road-dash seam between logo and text */
+.footer-logo-panel__edge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 4px;
+  z-index: 2;
+  background: repeating-linear-gradient(
+    180deg,
+    var(--indicator) 0 14px,
+    transparent 14px 26px
+  );
+  opacity: 0.85;
+}
+
+.footer-logo-panel__caption {
+  position: absolute;
+  left: 12px;
+  bottom: 14px;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--indicator);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+.footer-main {
+  min-width: 0;
+  padding: clamp(48px, 6vw, 72px) var(--pad) 26px;
+  display: flex;
+  flex-direction: column;
+  max-width: calc(var(--container) + var(--pad));
 }
 
 .footer-grid {
@@ -1839,42 +2009,22 @@ body.menu-open {
   gap: 40px;
   padding-bottom: 44px;
   border-bottom: 1px dashed rgba(247, 244, 236, 0.12);
+  flex: 1;
 }
 
-.footer-brand .brand {
+.footer-brand-name {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--white);
-  margin-bottom: 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
 }
 
 .footer-brand p {
   font-size: 0.9rem;
   max-width: 32ch;
-}
-
-.footer-socials {
-  display: flex;
-  gap: 14px;
-  margin-top: 18px;
-}
-
-.footer-socials a {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid rgba(247, 244, 236, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease;
-}
-
-.footer-socials a:hover {
-  background: var(--indicator);
-  border-color: var(--indicator);
-  color: var(--tarmac-deep);
 }
 
 .site-footer h5 {
@@ -1907,6 +2057,12 @@ body.menu-open {
 }
 
 /* ============ RESPONSIVE ============ */
+@media (max-width: 1100px) {
+  .page-shell {
+    padding-left: 0;
+  }
+}
+
 @media (max-width: 980px) {
   .nav-links,
   .nav-right .btn {
@@ -1917,26 +2073,44 @@ body.menu-open {
     display: block;
   }
 
+  .nav-inner {
+    gap: 12px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .brand-logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand-text b {
+    font-size: 1.15rem;
+  }
+
   .hero-inner {
     grid-template-columns: 1fr;
+    gap: 28px;
   }
 
   .hero-media {
     order: -1;
-    max-width: 420px;
+    max-width: min(420px, 100%);
     margin: 0 auto;
     width: 100%;
   }
 
   .hero-media-frame {
     aspect-ratio: 5 / 4;
-    max-height: 380px;
+    max-height: min(340px, 52vw);
   }
 
   .hero-media-note {
     text-align: center;
     margin-left: auto;
     margin-right: auto;
+    font-size: 0.72rem;
+    padding: 0 4px;
   }
 
   .about-grid,
@@ -1946,11 +2120,13 @@ body.menu-open {
 
   .service-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
   .fleet-grid,
   .instructor-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
   .price-grid,
@@ -1966,6 +2142,11 @@ body.menu-open {
     grid-template-columns: 1fr 1fr;
   }
 
+  .footer-band {
+    grid-template-columns: minmax(100px, 26vw) minmax(0, 1fr);
+    min-height: clamp(240px, 38vh, 360px);
+  }
+
   .route-desktop {
     display: none;
   }
@@ -1974,21 +2155,48 @@ body.menu-open {
     display: block;
     margin-top: 20px;
   }
+
+  .section-pad {
+    padding: clamp(48px, 8vw, 80px) 0;
+  }
+
+  .yard-note {
+    transform: rotate(-1deg);
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .audio-pill {
+    max-width: 100%;
+  }
+
+  .audio-pill__label {
+    white-space: normal;
+  }
+
+  .yard-visit__actions {
+    flex-direction: column;
+  }
+
+  .yard-visit__actions .btn {
+    width: 100%;
+  }
 }
 
 @media (max-width: 640px) {
-  .util-left {
-    display: none;
+  :root {
+    --pad: clamp(14px, 4.5vw, 20px);
   }
 
-  .util-inner {
-    justify-content: center;
+  .util-bar {
+    display: none;
   }
 
   .service-grid,
   .fleet-grid,
   .instructor-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
 
   .feature-grid {
@@ -2001,24 +2209,202 @@ body.menu-open {
 
   .stat-row {
     grid-template-columns: 1fr 1fr;
+    gap: 14px 12px;
+  }
+
+  .stat b {
+    font-size: 1.35rem;
   }
 
   .footer-grid {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 28px;
+  }
+
+  .footer-band {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  /* Mobile: logo still full-width strip, top of footer, full height of that strip */
+  .footer-logo-panel {
+    min-height: 160px;
+    height: 180px;
+  }
+
+  .footer-logo-panel__edge {
+    top: auto;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 4px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--indicator) 0 14px,
+      transparent 14px 26px
+    );
+  }
+
+  .footer-main {
+    padding-top: 28px;
+  }
+
+  .founder-portraits {
+    justify-content: center;
+  }
+
+  .founder-portrait--offset {
+    transform: none;
+  }
+
+  .founder-quote {
+    max-width: none;
+    text-align: center;
+  }
+
+  .founder-name {
+    text-align: center;
+  }
+
+  .founder-block .eyebrow {
+    display: flex;
+    justify-content: center;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.85rem, 9vw, 2.6rem);
+  }
+
+  .hero-ctas {
+    flex-direction: column;
+    width: 100%;
   }
 
   .hero-ctas .btn {
     width: 100%;
   }
 
-  .founder-wrap {
-    flex-direction: column;
-    text-align: center;
+  .hero-media-inset {
+    width: min(48%, 150px);
+    right: 10px;
+    bottom: 48px;
+  }
+
+  .hero-media-meta {
+    gap: 6px;
+  }
+
+  .hero-media-chip {
+    font-size: 0.65rem;
+    padding: 5px 9px;
   }
 
   .founder-text {
     min-width: 0;
+    width: 100%;
+  }
+
+  .founder-portraits {
+    gap: 10px;
+  }
+
+  .founder-portrait {
+    flex: 1 1 42%;
+    max-width: none;
+  }
+
+  .price-amount {
+    font-size: clamp(1.8rem, 8vw, 2.4rem);
+  }
+
+  .price-card {
+    padding: 26px 20px;
+  }
+
+  .service-card,
+  .fleet-card,
+  .instructor-card {
+    padding: 20px 16px;
+  }
+
+  .route-mobile-item h4 {
+    font-size: 0.9rem;
+    line-height: 1.25;
+  }
+
+  .headline {
+    max-width: none !important;
+  }
+
+  h2.headline {
+    max-width: none;
+  }
+
+  .origin-grid p {
+    font-size: 0.98rem;
+  }
+
+  .mobile-cta-bar__book,
+  .mobile-cta-bar__wa {
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    padding: 0 8px;
+  }
+
+  .journey-progress-mobile__label {
+    font-size: 0.7rem;
+  }
+
+  .yard-status {
+    max-width: none;
+    width: 100%;
+  }
+
+  .courses-with-status {
+    grid-template-columns: 1fr;
+  }
+
+  .map-wrap iframe {
+    height: 220px;
+  }
+
+  .contact-form {
+    padding: 22px 16px;
+  }
+
+  .wall-card {
+    flex: 0 0 min(240px, 85vw);
+  }
+
+  .btn {
+    white-space: normal;
+    text-align: center;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 380px) {
+  .brand-text span {
+    letter-spacing: 0.08em;
+    font-size: 0.55rem;
+  }
+
+  .brand-text b {
+    font-size: 1.05rem;
+  }
+
+  .mobile-cta-bar {
+    height: auto;
+    min-height: 56px;
+    padding-top: 8px;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -2155,6 +2541,85 @@ body.menu-open {
   text-transform: uppercase;
   color: var(--highway) !important;
   font-weight: 600;
+}
+
+.licence-group {
+  grid-column: 1 / -1;
+  margin-top: 12px;
+}
+
+.licence-group + .licence-group {
+  margin-top: 40px;
+}
+
+.licence-group__title {
+  font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.licence-group__sub {
+  color: var(--slate);
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+  max-width: 52ch;
+}
+
+.service-grid--licence {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.service-card--licence {
+  display: flex;
+  flex-direction: column;
+}
+
+.service-reqs {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+}
+
+.service-reqs__label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--highway);
+  font-weight: 700;
+  margin-bottom: 6px !important;
+}
+
+.service-reqs ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.service-reqs li {
+  font-size: 0.85rem;
+  color: var(--slate);
+  padding: 3px 0 3px 14px;
+  position: relative;
+}
+
+.service-reqs li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--indicator);
+}
+
+@media (max-width: 980px) {
+  .service-grid--licence {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Yard visit trust block */
@@ -2468,7 +2933,7 @@ body.menu-open {
 /* Founder + yard note */
 .founder-layout {
   display: grid;
-  grid-template-columns: 1.4fr 0.75fr;
+  grid-template-columns: 1.35fr 0.75fr;
   gap: clamp(24px, 4vw, 40px);
   align-items: start;
 }

@@ -69,7 +69,8 @@ export function Hero({ hasHeroPhoto = false }: HeroProps) {
           <p className="hero-sub">
             Mkombozi means <em>liberator</em> — and that&apos;s exactly what a driving
             licence gives you. Patient, professional instruction for every category of
-            Kenyan licence: manual, automatic, motorcycle, and PSV.
+            Kenyan licence Category A (motorcycles) and Category B (light vehicles) —
+            A1–A3 and B1–B3.
           </p>
           {weekLabel ? (
             <p className="passes-ticker" role="status">

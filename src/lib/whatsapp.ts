@@ -27,7 +27,7 @@ export function whatsappUrl(opts?: {
     default:
       text = course
         ? `Hi Mkombozi, I'm interested in lessons. Can you tell me more about ${course}? Asante!`
-        : "Hi Mkombozi, I'm interested in lessons. Can you help me choose between Class B and D? Asante!";
+        : "Hi Mkombozi, I'm interested in lessons. Can you help me choose between Category A (motorcycle) and Category B (car)? Asante!";
   }
 
   text = `${text} Safari njema!`;

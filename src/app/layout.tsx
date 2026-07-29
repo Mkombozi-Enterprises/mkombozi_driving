@@ -27,13 +27,13 @@ const hand = Caveat({
 export const metadata: Metadata = {
   title: "Mkombozi Driving School | NTSA Driving Lessons Kakamega & Lumakanda",
   description:
-    "NTSA-certified driving school in Lumakanda, Kakamega County. Class A–D lessons — manual, automatic, motorcycle, truck and PSV. Flexible schedules, M-Pesa, honest pricing.",
+    "NTSA-certified driving school in Lumakanda, Kakamega County. Category A (A1–A3 motorcycles) and Category B (B1–B3 light vehicles). Flexible schedules, M-Pesa, honest pricing.",
   keywords: [
     "driving school Kakamega",
     "NTSA driving school",
     "Class B driving lessons Lumakanda",
+    "Category A motorcycle licence Kenya",
     "driving school near me Kenya",
-    "PSV training Kakamega",
     "Mkombozi Driving School",
   ],
   // Place files under public/ — see public/ICONS.md

@@ -1,28 +1,32 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { journeyPosts } from "@/lib/site";
 
 /**
- * Signature: dashed centre-line + km posts (desktop).
- * Mobile: compact progress indicator only — reduces nav competition with header.
- * data-track attrs ready for analytics (spine vs header).
+ * Desktop spine starts *below* the sticky nav stack so step 01 is never covered.
+ * Marker position is relative to the posts container inside the spine.
  */
 export function JourneySpine() {
+  const postsRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
-  const [progress, setProgress] = useState(0);
   const [markerTop, setMarkerTop] = useState(0);
+  const [progressH, setProgressH] = useState(0);
 
   const update = useCallback(() => {
     const doc = document.documentElement;
     const scrollable = doc.scrollHeight - window.innerHeight;
     const p = scrollable > 0 ? window.scrollY / scrollable : 0;
-    setProgress(Math.min(1, Math.max(0, p)));
+    const clamped = Math.min(1, Math.max(0, p));
 
-    const trackStart = window.innerHeight * 0.12;
-    const trackEnd = window.innerHeight * 0.9;
-    const trackLen = trackEnd - trackStart;
-    setMarkerTop(trackStart + trackLen * Math.min(1, Math.max(0, p)));
+    const posts = postsRef.current;
+    if (posts) {
+      // Positions relative to .journey-spine
+      const start = posts.offsetTop;
+      const len = Math.max(posts.offsetHeight, 1);
+      setMarkerTop(start + len * clamped);
+      setProgressH(len * clamped);
+    }
 
     let best = 0;
     let bestDist = Infinity;
@@ -80,7 +84,7 @@ export function JourneySpine() {
         <div className="journey-spine__track" aria-hidden />
         <div
           className="journey-spine__progress"
-          style={{ height: `calc((78vh) * ${progress})` }}
+          style={{ height: progressH }}
           aria-hidden
         />
         <div
@@ -88,7 +92,7 @@ export function JourneySpine() {
           style={{ top: markerTop }}
           aria-hidden
         />
-        <div className="journey-spine__posts">
+        <div className="journey-spine__posts" ref={postsRef}>
           {journeyPosts.map((post, i) => {
             const isActive = i === active;
             const isPassed = i < active;
@@ -112,7 +116,6 @@ export function JourneySpine() {
         </div>
       </nav>
 
-      {/* Mobile: progress only — not a second nav system */}
       <div
         className="journey-progress-mobile"
         role="status"

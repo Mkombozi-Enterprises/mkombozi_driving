@@ -1,13 +1,12 @@
 # Brand icons / favicon
 
-Default Next.js SVG assets and `src/app/favicon.ico` were removed.  
-Drop **your** files into `public/` with these exact names:
+| File | Purpose |
+|------|---------|
+| `public/favicon.ico` | Browser tab |
+| `public/icon.png` | Tab + **navbar/footer logo** (`BrandLogo`) |
+| `public/apple-touch-icon.png` | iOS home screen |
 
-| Your file | Save as (exact path) | Purpose |
-|-----------|----------------------|---------|
-| `.ico` | `public/favicon.ico` | Browser tab (classic) |
-| `.png` | `public/icon.png` | Modern tab / PWA-style icon |
-| `.png` (same or 180×180) | `public/apple-touch-icon.png` | iOS home screen |
+Navbar and footer use `/icon.png` via `src/components/BrandLogo.tsx`.
 
 ## Steps
 

@@ -19,25 +19,24 @@ export const site = {
   mapLng: 34.9569,
   areaServed: "Kakamega County",
   priceRange: "KES",
-  /** Optional: public/audio/founder-mangelepa.mp3 */
   founderAudioSrc: "/audio/founder-mangelepa.mp3",
   founderAudioTranscript:
-    "Karibu. When I started this yard in Lumakanda, I wanted a place where learners actually understand the road, not just pass the test. Niko hapa.",
+    "Arise and Shine for your light has come.",
 };
 
-/** Hand-pinned yard note — rotate monthly (Caveat / paper card) */
 export const yardNote = {
   body: "This week we're practicing night driving after 6pm. Bring a jacket — Lumakanda gets cold after dark. See you at the yard.",
-  signOff: "— Mangelepa",
+  signOff: "— The yard team",
   updatedLabel: "Pinned this week",
 };
 
-/** Manual yard board — update in site.ts to feel alive */
+export const founderQuote = "Arise and Shine for your light has come";
+
 export const yardToday = {
   title: "Today at Lumakanda Yard",
   lines: [
-    { icon: "car" as const, text: "Class B: 9am — 12pm" },
-    { icon: "moto" as const, text: "Class A: 2pm — 4pm" },
+    { icon: "car" as const, text: "Category B (B1/B2): 9am — 12pm" },
+    { icon: "moto" as const, text: "Category A (A1–A3): 2pm — 4pm" },
     { icon: "rain" as const, text: "Wet-road drill: 5pm (if rain holds)" },
   ],
   nextIntake: "Next intake: rolling — book a slot any week",
@@ -45,7 +44,6 @@ export const yardToday = {
     "Your likely test route (~12km). We practice this every Thursday: yard → Kakamega Forest turnoff → equator marker loop → home.",
 };
 
-/** Living social proof — add real graduates only */
 export const wallOfPasses: {
   name: string;
   classLabel: string;
@@ -53,9 +51,8 @@ export const wallOfPasses: {
   advice: string;
 }[] = [];
 
-/** Soft ticker when wall is empty or for hero */
 export const passesTicker = {
-  thisWeekCount: 0, // set when you have real numbers
+  thisWeekCount: 0,
   emptyCta: "Be the first on our 2026 wall. Book today.",
   hasWeekLabel: (n: number) =>
     n > 0 ? `This week: ${n} new driver${n === 1 ? "" : "s"} licensed` : null,
@@ -81,7 +78,6 @@ export const navLinks = [
   { href: "#contact", label: "Contact" },
 ] as const;
 
-/** Local geography — not abstract steps */
 export const routeStops = [
   {
     title: "Stop 1: Kakamega Referral (Medical)",
@@ -121,134 +117,144 @@ export const routeStops = [
   },
 ] as const;
 
-export const courses = [
+/**
+ * We only train Category A and Category B (NTSA Kenya).
+ * No Class C (trucks) or Class D (PSV matatu/bus).
+ */
+export const licenceGroups = [
   {
-    tag: "Class A",
-    title: "Motorcycles & Boda Bodas",
-    body: "Balance, control, and defensive road-craft for two- and three-wheelers, from mopeds to courier bikes.",
-    icon: "moto" as const,
-    duration: "~2–4 weeks",
+    classKey: "A",
+    title: "Category A — Driving Licence",
+    subtitle: "Motorcycles, mopeds, motorcycle taxis & three-wheelers",
+    courses: [
+      {
+        code: "A1",
+        name: "Moped",
+        description:
+          "Ride a motorcycle of up to 50cc. No passengers and no loads allowed.",
+        requirements: ["Minimum age of 16 years"],
+        icon: "moto" as const,
+      },
+      {
+        code: "A2",
+        name: "Light motorcycle",
+        description:
+          "Ride a motorcycle above 50cc. May carry a passenger, and a maximum load of 60 kg (for up to 400cc).",
+        requirements: ["Minimum age of 18 years"],
+        icon: "moto" as const,
+      },
+      {
+        code: "A3",
+        name: "Motorcycle taxi, couriers & three-wheelers",
+        description:
+          "Ride a motorcycle above 100cc — including motorcycle taxi, courier work, and three-wheelers (e.g. tuk-tuk). May carry a passenger and a maximum load of 100 kg (for up to 50cc as applicable).",
+        requirements: [
+          "Minimum age of 21 years",
+          "1 year riding experience in category A2",
+        ],
+        icon: "moto" as const,
+      },
+    ],
   },
   {
-    tag: "Class B",
-    title: "Personal & Private Cars",
-    body: "Manual or automatic saloon car, SUV, and pick-up training — our most popular course and the right start for most learners.",
-    icon: "car" as const,
-    duration: "~4–8 weeks",
+    classKey: "B",
+    title: "Category B — Driving Licence",
+    subtitle: "Light vehicles (passenger cars) up to 3,500 kg GVW",
+    courses: [
+      {
+        code: "B1",
+        name: "Light vehicle",
+        description:
+          "Drive a light vehicle (passenger car) with a maximum Gross Vehicle Weight (GVW) of 3,500 kg plus one light trailer (not exceeding 750 kg). Manual or automatic gearbox. Up to 7 passengers.",
+        requirements: ["Minimum age of 18 years"],
+        icon: "car" as const,
+      },
+      {
+        code: "B2",
+        name: "Light vehicle — automatic only",
+        description:
+          "Drive a light vehicle with an automatic gearbox only, max GVW 3,500 kg with one light trailer (not exceeding 750 kg). Cannot drive a manual gearbox. Up to 7 passengers.",
+        requirements: ["Minimum age of 18 years"],
+        icon: "car" as const,
+      },
+      {
+        code: "B3",
+        name: "Professional (light vehicle)",
+        description:
+          "Drive a light vehicle max GVW 3,500 kg with one light trailer (not exceeding 750 kg), manual or automatic. Up to 7 passengers — professional class for light vehicles.",
+        requirements: ["Minimum age of 21 years"],
+        icon: "car" as const,
+      },
+    ],
   },
-  {
-    tag: "Class C",
-    title: "Trucks & Commercial Vehicles",
-    body: "Light to heavy goods vehicle training for drivers building a career in transport and logistics.",
-    icon: "truck" as const,
-    duration: "~4–10 weeks",
-  },
-  {
-    tag: "Class D",
-    title: "PSV — Matatu & Bus",
-    body: "Commercial passenger-vehicle training plus PSV badge preparation for aspiring public transport drivers.",
-    icon: "bus" as const,
-    duration: "~4–10 weeks",
-  },
+] as const;
+
+/** Flat list for grids that still use `courses` name */
+export const courses = licenceGroups.flatMap((g) =>
+  g.courses.map((c) => ({
+    tag: c.code,
+    title: `${c.code} — ${c.name}`,
+    body: c.description,
+    requirements: c.requirements,
+    icon: c.icon,
+    category: g.classKey,
+  }))
+);
+
+/** Optional add-ons (alongside Category A & B licences) */
+export const addOns = [
   {
     tag: "Add-On",
     title: "Defensive Driving",
-    body: "Hazard perception and advanced safety technique for licensed drivers who want real confidence in traffic.",
+    body: "Hazard perception, space management, and advanced safety technique for licensed drivers who want real confidence in traffic.",
     icon: "shield" as const,
-    duration: "1–3 days",
   },
   {
     tag: "Add-On",
-    title: "Refresher Lessons",
-    body: "Back-behind-the-wheel coaching for licence holders who haven't driven in a while.",
-    icon: "clock" as const,
-    duration: "Flexible",
-  },
-  {
-    tag: "Prep",
-    title: "NTSA Theory & Test Prep",
-    body: "Highway Code coaching and mock tests, so you walk into your NTSA test ready.",
+    title: "First Aid",
+    body: "Practical roadside first-aid skills so you can help yourself and others after a crash or medical emergency.",
     icon: "check" as const,
-    duration: "1–2 weeks",
   },
   {
-    tag: "Fast-Track",
-    title: "Intensive Crash Course",
-    body: "A condensed, fast-track programme for learners working against a deadline.",
+    tag: "Add-On",
+    title: "Intro to Automotive Engineering",
+    body: "A beginner-friendly introduction to how your vehicle works — basic systems, simple checks, and what to listen for on the road.",
     icon: "target" as const,
-    duration: "~2–4 weeks",
   },
 ] as const;
 
 export const fleet = [
-  { title: "Manual Saloon Car", slot: "Manual" },
-  { title: "Automatic Saloon Car", slot: "Automatic" },
-  { title: "Training Motorcycle", slot: "Class A" },
-  { title: "PSV Minibus", slot: "PSV" },
+  { title: "Manual training car (B1 / B3)", slot: "Manual" },
+  { title: "Automatic training car (B2)", slot: "Automatic" },
+  { title: "Training motorcycle (A1–A3)", slot: "Class A" },
+  { title: "Dual-control saloon", slot: "Dual-control" },
 ] as const;
 
+/** Single training package — confirm with team if rates change */
 export const packages = [
   {
-    name: "Basic",
-    classLabel: "Class B — Manual",
-    fromPrice: "15,000",
-    featured: false,
-    courseValue: "Class B – Manual (Basic)",
-    duration: "~4–6 weeks",
-    included: [
-      "20 practical lessons",
-      "Highway Code theory classes",
-      "NTSA test-booking support",
-    ],
-    extras: [
-      "NTSA medical & licence fees (government)",
-      "Passport photos & eCitizen charges",
-    ],
-  },
-  {
-    name: "Standard",
-    classLabel: "Class B — Automatic",
-    fromPrice: "20,000",
+    name: "Full Training Package",
+    classLabel: "Category A or B · one clear price",
+    price: "16,000",
     featured: true,
-    courseValue: "Class B – Automatic (Standard)",
-    duration: "~5–8 weeks",
+    courseValue: "Full Training Package — 16,000 KES",
+    duration: "At your pace",
     included: [
-      "25 practical lessons",
-      "Theory classes + 1 mock test",
-      "Automatic transmission focus",
-      "NTSA test-booking support",
+      "Full course training (Category A or B as enrolled)",
+      "PDL (provisional driving licence) booking support",
+      "NTSA test booking support",
+      "Extra coaching as needed before your test",
+      "Highway Code / theory prep",
     ],
-    extras: [
-      "NTSA medical & licence fees (government)",
-      "Extra lessons beyond package",
-    ],
-  },
-  {
-    name: "Premium",
-    classLabel: "Complete Package",
-    fromPrice: "35,000",
-    featured: false,
-    courseValue: "Complete Package (Premium)",
-    duration: "~6–10 weeks",
-    included: [
-      "Manual + automatic training",
-      "Defensive driving add-on",
-      "Priority scheduling",
-      "1 free refresher lesson",
-    ],
-    extras: [
-      "NTSA medical & licence fees (government)",
-      "Passport photos & eCitizen charges",
-    ],
+    note: "16,000 KES inclusive of PDL booking, test booking, and extra coaching. Government medical / eCitizen / licence card fees may still apply separately.",
   },
 ] as const;
 
-/** Superpowers > job titles */
 export const instructors = [
   {
     name: "Hadson Musamusi",
     superpower: "The Highway Merge Coach",
-    role: "Class B & Defensive Driving",
+    role: "Category B (B1 / B3) & Defensive Driving",
     years: 15,
     quote:
       "Rush hour on the Kakamega corridor doesn't scare me — and after a few lessons, it won't scare you either.",
@@ -257,7 +263,7 @@ export const instructors = [
   {
     name: "Judith Fedha",
     superpower: "The Parallel Parking Whisperer",
-    role: "Class B Automatic & Refresher",
+    role: "Category B2 Automatic & Refresher",
     years: 8,
     quote:
       "I've never had a student fail reversing at the Kakamega test yard — we practice until the car knows the space.",
@@ -266,19 +272,19 @@ export const instructors = [
   {
     name: "Peter Katana",
     superpower: "Mumias Road Expert",
-    role: "PSV & Class D",
+    role: "Category B1 — local roads & hill starts",
     years: 12,
     quote:
-      "I know every pothole season on Mumias Road. Commercial drivers need that map in their bones.",
+      "I know every pothole season on Mumias Road. Light-vehicle drivers need that map in their bones.",
     audioSrc: "/audio/instructor-peter.mp3",
   },
   {
     name: "Sarah N.",
     superpower: "Balance Before Speed",
-    role: "Class A Motorcycles",
+    role: "Category A (A1–A3) Motorcycles",
     years: 6,
     quote:
-      "Hello — I'm Sarah. I teach Class A. We start with balance and road craft, not show-offs.",
+      "Hello — I'm Sarah. I teach Category A. We start with balance and road craft, not show-offs.",
     audioSrc: "/audio/instructor-sarah.mp3",
   },
 ] as const;
@@ -292,20 +298,24 @@ export const reviews: {
 
 export const faqs = [
   {
-    q: "What's the minimum age to start lessons?",
-    a: "You can start on a learner's/provisional licence from age 16 (with parental consent), Class B car lessons from 18, and Class C and above typically from 24.",
+    q: "Which licence classes do you offer?",
+    a: "Only Category A (A1 moped, A2 light motorcycle, A3 motorcycle taxi/couriers/three-wheelers) and Category B (B1 light vehicle, B2 automatic, B3 professional light vehicle). We do not offer Class C trucks or Class D PSV matatu/bus training.",
+  },
+  {
+    q: "What's the minimum age to start?",
+    a: "A1 from 16 years; A2 and B1/B2 from 18; A3 and B3 from 21. A3 also needs one year of A2 riding experience.",
   },
   {
     q: "Do I need a medical certificate?",
     a: "Yes — a medical fitness and eyesight check is required before NTSA will issue a provisional or full driving licence. We point you toward the Kakamega medical path.",
   },
   {
-    q: "Manual or automatic — which should I choose?",
-    a: "Both are available. Automatic is often simpler for beginners, while manual (B2) gives you the flexibility to later drive either transmission.",
+    q: "B1 or B2 — which should I choose?",
+    a: "B1 covers manual or automatic and keeps more options open later. B2 is automatic-only — simpler for many beginners, but you cannot legally drive a manual on a B2 licence alone.",
   },
   {
     q: "How long does the full course take?",
-    a: "Most learners complete their course in 4–8 weeks, depending on the package chosen and how often they take lessons on our Lumakanda roads.",
+    a: "Most learners finish in about 2–8 weeks depending on category (A is often faster than B) and how often you take lessons on our Lumakanda roads.",
   },
   {
     q: "Do you help book my NTSA test?",
@@ -316,45 +326,60 @@ export const faqs = [
     a: "Yes — early mornings, evenings (including night driving practice), and weekends so lessons fit around work or school.",
   },
   {
-    q: "What payment methods do you accept?",
-    a: "Cash, bank transfer, and M-Pesa, with instalment plans available on our Standard and Premium packages.",
+    q: "What does the 16,000 KES package include?",
+    a: "One full training package at 16,000 KES, inclusive of PDL booking support, NTSA test booking support, and extra coaching before your test. Government medical, eCitizen, and smart licence card fees are usually paid separately.",
   },
   {
-    q: "Are NTSA fees included in package prices?",
-    a: "Package prices cover training with us. Government items — medical, eCitizen, licence card fees — are usually paid separately. We'll list every cost clearly when you enrol.",
+    q: "What payment methods do you accept?",
+    a: "Cash, bank transfer, and M-Pesa. Ask us about instalments when you enrol.",
+  },
+  {
+    q: "Do you offer add-on courses?",
+    a: "Yes — Defensive Driving, First Aid, and Intro to Automotive Engineering. Ask when you book for current add-on rates and schedules.",
   },
 ] as const;
 
 export const courseSelectOptions = [
+  { value: "A1 – Moped", label: "A1 — Moped", duration: "Package: 16,000 KES" },
   {
-    value: "Class A – Motorcycle",
-    label: "Class A — Motorcycle",
-    duration: "~2–4 weeks",
+    value: "A2 – Light motorcycle",
+    label: "A2 — Light motorcycle",
+    duration: "Package: 16,000 KES",
   },
   {
-    value: "Class B – Manual (Basic)",
-    label: "Class B — Manual",
-    duration: "~4–6 weeks",
+    value: "A3 – Motorcycle taxi / three-wheeler",
+    label: "A3 — Motorcycle taxi, couriers & three-wheelers",
+    duration: "Package: 16,000 KES",
   },
   {
-    value: "Class B – Automatic (Standard)",
-    label: "Class B — Automatic",
-    duration: "~5–8 weeks",
+    value: "B1 – Light vehicle",
+    label: "B1 — Light vehicle (manual or auto)",
+    duration: "Package: 16,000 KES",
   },
   {
-    value: "Class C – Truck",
-    label: "Class C — Truck",
-    duration: "~4–10 weeks",
+    value: "B2 – Light vehicle automatic",
+    label: "B2 — Light vehicle automatic only",
+    duration: "Package: 16,000 KES",
   },
   {
-    value: "Class D – PSV",
-    label: "Class D — PSV (Matatu/Bus)",
-    duration: "~4–10 weeks",
+    value: "B3 – Professional light vehicle",
+    label: "B3 — Professional (light vehicle)",
+    duration: "Package: 16,000 KES",
   },
   {
-    value: "Complete Package (Premium)",
-    label: "Complete Package",
-    duration: "~6–10 weeks",
+    value: "Add-on – Defensive Driving",
+    label: "Add-on — Defensive Driving",
+    duration: "Ask for rate",
+  },
+  {
+    value: "Add-on – First Aid",
+    label: "Add-on — First Aid",
+    duration: "Ask for rate",
+  },
+  {
+    value: "Add-on – Intro to Automotive Engineering",
+    label: "Add-on — Intro to Automotive Engineering",
+    duration: "Ask for rate",
   },
   {
     value: "Other",
@@ -363,7 +388,6 @@ export const courseSelectOptions = [
   },
 ] as const;
 
-/** EAT-aware hero lines (client computes hour) */
 export function greetingForHour(hour: number): string {
   if (hour >= 6 && hour < 11) return "Good morning. Ready for your first lesson?";
   if (hour >= 11 && hour < 16)
