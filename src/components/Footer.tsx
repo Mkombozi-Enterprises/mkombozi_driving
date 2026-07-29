@@ -1,5 +1,8 @@
-import { IconBrand, IconFacebook, IconInstagram, IconWhatsApp, IconX } from "./Icons";
+import Image from "next/image";
+import { IconBrand, IconWhatsApp } from "./Icons";
 import { site } from "@/lib/site";
+import { whatsappUrl } from "@/lib/whatsapp";
+import { MobileCtaBar } from "./MobileCtaBar";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -21,17 +24,14 @@ export function Footer() {
                 Your road to independence. NTSA-registered driver training in Kakamega
                 County and beyond.
               </p>
-              <div className="footer-socials">
-                <a href="#" aria-label="Facebook">
-                  <IconFacebook size="sm" />
-                </a>
-                <a href="#" aria-label="Instagram">
-                  <IconInstagram size="sm" />
-                </a>
-                <a href="#" aria-label="X">
-                  <IconX size="sm" />
-                </a>
-              </div>
+              <a
+                href={site.googleBusinessUrl}
+                className="footer-gbp"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Find us on Google · Leave a review
+              </a>
             </div>
             <div className="footer-col">
               <h5>Quick Links</h5>
@@ -83,27 +83,57 @@ export function Footer() {
                 <li>
                   <a href={`mailto:${site.email}`}>{site.email}</a>
                 </li>
+                <li>
+                  <a
+                    href={whatsappUrl({ context: "general" })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    WhatsApp chat
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
           <div className="footer-bottom">
-            <span>
-              &copy; {year} Mkombozi Driving School. All rights reserved.
-            </span>
-            <span>Safari njema — safe journeys.</span>
+            <span>Built by hand in Kakamega. Safari njema. · {year}</span>
+            <span>Mkombozi Driving School · Lumakanda</span>
           </div>
         </div>
       </footer>
 
+      <WhatsAppHumanFloat />
+      <MobileCtaBar />
+    </>
+  );
+}
+
+function WhatsAppHumanFloat() {
+  return (
+    <div className="wa-human wa-float--desktop">
+      <div className="wa-human__bubble" role="status">
+        Hi! Need help choosing between Class B and D? Text us.
+      </div>
       <a
-        href={`https://wa.me/${site.whatsapp}`}
-        className="wa-float"
+        href={whatsappUrl({ context: "general" })}
+        className="wa-float wa-human__btn"
         aria-label="Chat on WhatsApp"
         target="_blank"
         rel="noopener noreferrer"
+        data-track="wa-float-desktop"
       >
+        <span className="wa-human__avatar" aria-hidden>
+          <Image
+            src="/images/founder.jpeg"
+            alt=""
+            width={40}
+            height={40}
+            className="wa-human__avatar-img"
+          />
+        </span>
         <IconWhatsApp />
+        <span className="wa-float__label">Chat on WhatsApp</span>
       </a>
-    </>
+    </div>
   );
 }

@@ -9,8 +9,8 @@ import {
   IconPhone,
   IconPin,
   IconShield,
-  IconStar,
   IconWallet,
+  IconWhatsApp,
 } from "./Icons";
 import {
   courses,
@@ -18,12 +18,17 @@ import {
   fleet,
   instructors,
   packages,
-  reviews,
   routeStops,
   site,
+  wallOfPasses,
+  yardToday,
 } from "@/lib/site";
 import { ContactForm } from "./ContactForm";
 import { FAQList } from "./FAQList";
+import { whatsappUrl } from "@/lib/whatsapp";
+import { AudioPill } from "./AudioPill";
+import { YardNote } from "./YardNote";
+import { YardStatus } from "./YardStatus";
 
 export function AboutSection() {
   return (
@@ -40,8 +45,8 @@ export function AboutSection() {
               at a pace that respects where you&apos;re starting from.
             </p>
             <p className="quote">
-              &ldquo;Our job isn&apos;t to get you through a test. It&apos;s to make you a driver
-              you can trust — long after the test is over.&rdquo;
+              We teach you to drive, not just to{" "}
+              <span className="script-word">pass</span>.
             </p>
           </Reveal>
           <div className="feature-grid">
@@ -74,7 +79,7 @@ export function AboutSection() {
               <h4>Transparent Pricing</h4>
               <p>
                 Clear packages, flexible instalments, and M-Pesa accepted. No hidden
-                fees, ever.
+                school fees — we list government extras upfront.
               </p>
             </Reveal>
           </div>
@@ -88,22 +93,66 @@ export function FounderSection() {
   return (
     <section className="founder-note bg-chalk-dim">
       <div className="container">
-        <Reveal className="founder-wrap">
-          <Image
-            src="/images/founder.jpeg"
-            alt="Founders of Mkombozi Driving School"
-            width={150}
-            height={110}
-            className="founder-photo"
-          />
-          <div className="founder-text">
-            <span className="eyebrow">A Word From Our Founders</span>
-            <p className="founder-quote">
-              &ldquo;Mangelepa — <em>Marching Forward.</em>&rdquo; That&apos;s the phrase we live
-              by — and the same spirit we want every learner to drive away with.
+        <div className="founder-layout">
+          <Reveal className="founder-wrap">
+            <Image
+              src="/images/founder.jpeg"
+              alt="Founders of Mkombozi Driving School"
+              width={150}
+              height={110}
+              className="founder-photo"
+            />
+            <div className="founder-text">
+              <span className="eyebrow">A Word From Our Founders</span>
+              <p className="founder-quote">
+                &ldquo;Mangelepa — <em>Marching Forward.</em>&rdquo; That&apos;s the phrase we
+                live by — and the same spirit we want every learner to drive away with.
+              </p>
+              <p className="founder-name">
+                — Bishop Edward Musamusi &amp; Miss Sikuche Musamusi, Founders and
+                Directors
+              </p>
+              <AudioPill
+                src={site.founderAudioSrc}
+                label="Press play to hear from Mangelepa"
+                fallbackNote="Record a 30s phone voice note → public/audio/founder-mangelepa.mp3"
+                className="founder-audio"
+              />
+              <p className="founder-transcript">
+                <span className="founder-transcript__label">If you prefer to read:</span>{" "}
+                {site.founderAudioTranscript}
+              </p>
+            </div>
+          </Reveal>
+          <YardNote />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** Expanded origin band — specific, not “we are passionate” */
+export function OriginSection() {
+  return (
+    <section className="origin-band" id="origin" aria-labelledby="origin-title">
+      <div className="container">
+        <Reveal>
+          <p className="origin-kicker">The name · The yard · The belief</p>
+          <h2 id="origin-title" className="origin-title">
+            Why <em>Mkombozi</em>
+          </h2>
+          <div className="origin-grid">
+            <p>
+              <strong>Mkombozi</strong> means the one who liberates.
             </p>
-            <p className="founder-name">
-              — Bishop Edward Musamusi &amp; Miss Sikuche Musamusi, Founders and Directors
+            <p>
+              In 2012, after watching too many young people in Kakamega struggle to find
+              work because they couldn&apos;t drive, we opened a small yard off Mumias
+              Road with two cars and a belief: knowing the road is freedom.
+            </p>
+            <p>
+              Today we&apos;re NTSA-registered, but we still teach like it&apos;s your first
+              time holding the wheel — because it usually is.
             </p>
           </div>
         </Reveal>
@@ -115,16 +164,19 @@ export function FounderSection() {
 export function CoursesSection() {
   return (
     <section className="section-pad bg-chalk-dim" id="courses">
-      <div className="container">
-        <Reveal className="section-head center">
-          <span className="eyebrow">Our Courses</span>
-          <h2 className="headline">A course for every kind of driver</h2>
-          <p className="sub">
-            NTSA groups Kenyan licences into classes based on the vehicle you&apos;ll drive.
-            Tell us where you&apos;re headed, and we&apos;ll get you there — legally, safely, and
-            confidently.
-          </p>
-        </Reveal>
+      <div className="container courses-with-status">
+        <div>
+          <Reveal className="section-head">
+            <span className="eyebrow">Our Courses</span>
+            <h2 className="headline">A course for every kind of driver</h2>
+            <p className="sub">
+              NTSA groups Kenyan licences into classes based on the vehicle you&apos;ll
+              drive. Tell us where you&apos;re headed — Class A on two wheels or Class D on
+              Mumias Road matatus.
+            </p>
+          </Reveal>
+        </div>
+        <YardStatus />
         <div className="service-grid">
           {courses.map((c, i) => (
             <Reveal
@@ -136,6 +188,7 @@ export function CoursesSection() {
               <span className="service-tag">{c.tag}</span>
               <h4>{c.title}</h4>
               <p>{c.body}</p>
+              <p className="service-duration">{c.duration}</p>
             </Reveal>
           ))}
         </div>
@@ -149,11 +202,11 @@ export function RouteSection() {
     <section className="section-pad bg-asphalt route-section" id="route">
       <div className="container">
         <Reveal className="section-head center">
-          <span className="eyebrow">The Route</span>
-          <h2 className="headline">Six stops between you and a licence</h2>
+          <span className="eyebrow">The Route · Kakamega geography</span>
+          <h2 className="headline">Six local stops to a licence</h2>
           <p className="sub">
-            Getting licensed in Kenya follows a clear path. We walk it with you, start
-            to finish.
+            Not a generic checklist — the path we walk with learners around Kakamega and
+            Lumakanda, including roads examiners actually use.
           </p>
         </Reveal>
 
@@ -199,6 +252,11 @@ export function RouteSection() {
             </div>
           ))}
         </div>
+
+        <Reveal className="test-route-note">
+          <p className="test-route-note__label">Thursday practice loop</p>
+          <p>{yardToday.practiceRoute}</p>
+        </Reveal>
       </div>
     </section>
   );
@@ -230,10 +288,44 @@ export function FleetSection() {
             </Reveal>
           ))}
         </div>
-        <p className="fleet-note">
-          Real fleet photos are next — plate-safe shots of our Kenyan training vehicles
-          will land here. Placeholders keep the layout honest until then.
-        </p>
+
+        <Reveal className="yard-visit">
+          <div className="yard-visit__copy">
+            <h3>Visit our yard</h3>
+            <p>
+              The best trust check is walking the yard on Chevaywa–Matete Road. Come see
+              the dual-control cars, meet an instructor, and ask anything — no pressure
+              to enrol the same day.
+            </p>
+            <div className="yard-visit__actions">
+              <a href="#contact" className="btn btn-primary btn-small">
+                Book a yard visit
+              </a>
+              <a
+                href={whatsappUrl({ context: "fleet" })}
+                className="btn btn-ghost on-light btn-small"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <IconWhatsApp size="sm" />
+                WhatsApp to visit
+              </a>
+            </div>
+          </div>
+          <a
+            href="#contact"
+            className="yard-visit__map"
+            aria-label="Jump to map and contact"
+          >
+            <iframe
+              src={site.mapEmbedUrl}
+              title="Map preview — Mkombozi yard area"
+              loading="lazy"
+              tabIndex={-1}
+            />
+            <span className="yard-visit__map-label">Lumakanda · full map at contact</span>
+          </a>
+        </Reveal>
       </div>
     </section>
   );
@@ -245,12 +337,13 @@ export function PricingSection() {
       <div className="container">
         <Reveal className="section-head center">
           <span className="eyebrow">Packages</span>
-          <h2 className="headline">Simple, honest course packages</h2>
+          <h2 className="headline">Honest packages, clear starting prices</h2>
+          <p className="sub">
+            Figures below are <strong>from</strong> prices for training packages.
+            Government fees (medical, eCitizen, licence card) are listed separately —
+            confirm your quote with us before you pay.
+          </p>
         </Reveal>
-        <p className="price-note">
-          Sample pricing in KES — confirm current rates and instalment plans with our
-          team.
-        </p>
         <div className="price-grid">
           {packages.map((pkg, i) => (
             <Reveal
@@ -262,22 +355,36 @@ export function PricingSection() {
               <h4>{pkg.name}</h4>
               <span className="price-class">{pkg.classLabel}</span>
               <div className="price-amount">
-                {pkg.price} <span>KES</span>
+                <span className="price-from">From</span> {pkg.fromPrice}{" "}
+                <span>KES</span>
               </div>
-              <ul className="price-list">
-                {pkg.features.map((f) => (
-                  <li key={f}>
-                    <IconCheck size="sm" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
+              <p className="price-duration">Typical pace: {pkg.duration}</p>
+              <div className="price-split">
+                <p className="price-split-label">What&apos;s included</p>
+                <ul className="price-list">
+                  {pkg.included.map((f) => (
+                    <li key={f}>
+                      <IconCheck size="sm" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <p className="price-split-label">Usually extra (not school profit)</p>
+                <ul className="price-list price-list--muted">
+                  {pkg.extras.map((f) => (
+                    <li key={f}>
+                      <span className="price-extra-dot" aria-hidden />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
               <a
                 href="#contact"
                 className={`btn btn-block ${pkg.featured ? "btn-primary" : "btn-ghost on-light"}`}
                 data-choose-course={pkg.courseValue}
               >
-                Choose {pkg.name}
+                Request a quote
               </a>
             </Reveal>
           ))}
@@ -293,7 +400,10 @@ export function InstructorsSection() {
       <div className="container">
         <Reveal className="section-head center">
           <span className="eyebrow">Meet The Team</span>
-          <h2 className="headline">Instructors who meet you where you are</h2>
+          <h2 className="headline">Instructors with superpowers</h2>
+          <p className="sub">
+            Not job titles alone — the skills they&apos;re known for on Kakamega roads.
+          </p>
         </Reveal>
         <div className="instructor-grid">
           {instructors.map((p, i) => (
@@ -302,13 +412,32 @@ export function InstructorsSection() {
               className="instructor-card"
               delay={((i % 4) + 1) as 1 | 2 | 3 | 4}
             >
-              <div className="avatar-fallback" aria-hidden>
-                {p.initials}
+              <div className="avatar-sil" aria-hidden>
+                <svg viewBox="0 0 80 80" className="avatar-sil__svg">
+                  <circle cx="40" cy="40" r="40" fill="currentColor" opacity="0.12" />
+                  <circle cx="40" cy="30" r="14" fill="currentColor" opacity="0.45" />
+                  <path
+                    d="M16 68c4-14 14-22 24-22s20 8 24 22"
+                    fill="currentColor"
+                    opacity="0.45"
+                  />
+                </svg>
+                <span className="avatar-sil__badge" title="NTSA-certified instructor">
+                  NTSA
+                </span>
               </div>
               <h4>{p.name}</h4>
-              <div className="instructor-role">{p.role}</div>
-              <div className="instructor-years">{p.years}</div>
-              <p className="bio">&ldquo;{p.bio}&rdquo;</p>
+              <p className="instructor-super">{p.superpower}</p>
+              <div className="instructor-role">
+                {p.years}+ years · {p.role}
+              </div>
+              <p className="bio">&ldquo;{p.quote}&rdquo;</p>
+              <AudioPill
+                src={p.audioSrc}
+                label={`Hear ${p.name.split(" ")[0]}`}
+                compact
+                fallbackNote="10s intro — drop MP3 in public/audio/"
+              />
             </Reveal>
           ))}
         </div>
@@ -317,34 +446,63 @@ export function InstructorsSection() {
   );
 }
 
-export function ReviewsSection() {
+/** Wall of Passes — factual, accumulative social proof */
+export function WallSection() {
+  const hasPasses = wallOfPasses.length > 0;
+
   return (
-    <section className="section-pad bg-asphalt" id="reviews">
+    <section className="section-pad bg-asphalt" id="wall">
       <div className="container">
         <Reveal className="section-head center">
-          <span className="eyebrow">Reviews</span>
-          <h2 className="headline">What our graduates say</h2>
+          <span className="eyebrow">Wall of Passes</span>
+          <h2 className="headline">Licensed from this yard</h2>
+          <p className="sub">
+            Name · class · date · one word of advice. Real first names only — no licence
+            numbers, no sample quotes.
+          </p>
         </Reveal>
-        <div className="testi-grid">
-          {reviews.map((r, i) => (
-            <Reveal
-              key={r.name}
-              className="testi-card"
-              delay={((i % 3) + 1) as 1 | 2 | 3}
-            >
-              <div className="testi-stars" aria-label="5 out of 5 stars">
-                {Array.from({ length: 5 }).map((_, s) => (
-                  <IconStar key={s} size="sm" />
-                ))}
-              </div>
-              <p className="quote">&ldquo;{r.quote}&rdquo;</p>
-              <div className="testi-name">{r.name}</div>
-              <div className="testi-loc">{r.loc}</div>
-            </Reveal>
-          ))}
-        </div>
-        <p className="sub testi-note">
-          Sample reviews shown — swap these for real feedback from your own graduates.
+
+        {hasPasses ? (
+          <div className="wall-scroll">
+            {wallOfPasses.map((g) => (
+              <article key={`${g.name}-${g.datePassed}`} className="wall-card">
+                <p className="wall-card__name">{g.name}</p>
+                <p className="wall-card__meta">
+                  {g.classLabel} · {g.datePassed}
+                </p>
+                <p className="wall-card__advice">&ldquo;{g.advice}&rdquo;</p>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <Reveal className="wall-empty">
+            <p className="wall-empty__lead">
+              Be the first on our <strong>2026 wall</strong>.
+            </p>
+            <p>
+              When you pass, we add your first name, class, and one piece of advice for
+              the next learner — if you want to be here.
+            </p>
+            <a href="#contact" className="btn btn-primary">
+              Book today
+            </a>
+          </Reveal>
+        )}
+
+        <p className="wall-harvest">
+          Graduates:{" "}
+          <a
+            href={whatsappUrl({ context: "review" })}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            WhatsApp us to join the wall
+          </a>{" "}
+          · or{" "}
+          <a href={site.googleBusinessUrl} target="_blank" rel="noopener noreferrer">
+            leave a Google review
+          </a>
+          .
         </p>
       </div>
     </section>
@@ -391,6 +549,14 @@ export function ContactSection() {
                   <b>Phone / WhatsApp</b>
                   <span>
                     <a href={`tel:${site.phoneTel}`}>{site.phone}</a>
+                    {" · "}
+                    <a
+                      href={whatsappUrl({ context: "general" })}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Chat on WhatsApp
+                    </a>
                   </span>
                 </div>
               </div>
@@ -411,13 +577,21 @@ export function ContactSection() {
                 </div>
               </div>
             </div>
+            <a href="#after-map" className="skip-map">
+              Skip map
+            </a>
             <div className="map-wrap">
               <iframe
-                src="https://www.openstreetmap.org/export/embed.html?bbox=34.9319%2C0.6241%2C34.9819%2C0.6641&marker=0.6441%2C34.9569&layer=mapnik"
+                src={site.mapEmbedUrl}
                 title="Map to Mkombozi Driving School"
                 loading="lazy"
+                tabIndex={-1}
               />
             </div>
+            <p className="map-route-caption">{yardToday.practiceRoute}</p>
+            <span id="after-map" className="sr-only">
+              End of map
+            </span>
           </Reveal>
           <Reveal>
             <ContactForm />

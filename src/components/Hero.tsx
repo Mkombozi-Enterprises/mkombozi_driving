@@ -2,19 +2,16 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
+import { TimeGreeting } from "./TimeGreeting";
+import { passesTicker } from "@/lib/site";
 
 type HeroProps = {
-  /** True when public/images/hero.jpg exists (detected on the server). */
   hasHeroPhoto?: boolean;
 };
 
-/**
- * Photography-ready hero:
- * - Primary media stage uses /images/hero.jpg when present
- * - Fallback: road geometry + real founder inset (no fake cars)
- */
 export function Hero({ hasHeroPhoto = false }: HeroProps) {
   const rowRef = useRef<HTMLDivElement>(null);
+  const weekLabel = passesTicker.hasWeekLabel(passesTicker.thisWeekCount);
 
   useEffect(() => {
     const root = rowRef.current;
@@ -64,6 +61,7 @@ export function Hero({ hasHeroPhoto = false }: HeroProps) {
       <div className="container hero-inner">
         <div className="hero-copy">
           <span className="eyebrow hero-eyebrow">NTSA-Certified · Kakamega County</span>
+          <TimeGreeting />
           <h1>
             <span className="line">Your road to</span>
             <span className="line accent">independence.</span>
@@ -73,6 +71,15 @@ export function Hero({ hasHeroPhoto = false }: HeroProps) {
             licence gives you. Patient, professional instruction for every category of
             Kenyan licence: manual, automatic, motorcycle, and PSV.
           </p>
+          {weekLabel ? (
+            <p className="passes-ticker" role="status">
+              {weekLabel}
+            </p>
+          ) : (
+            <p className="passes-ticker passes-ticker--soft">
+              {passesTicker.emptyCta}
+            </p>
+          )}
           <div className="hero-ctas">
             <a href="#contact" className="btn btn-primary">
               Book Your First Lesson

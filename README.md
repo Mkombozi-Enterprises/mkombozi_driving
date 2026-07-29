@@ -37,6 +37,21 @@ public/images/     # Founder photo + future fleet shots
 _legacy/           # Previous static HTML/CSS/JS (reference)
 ```
 
+## Mobile conversion
+
+On viewports ≤980px: sticky bottom bar (**Book Lesson** + **WhatsApp**) and a compact journey progress strip (not a second nav). WhatsApp links pre-fill a message ending with *Safari njema*.
+
+## Staff notifications
+
+Optional email when an enquiry arrives — set in `.env.local`:
+
+```
+RESEND_API_KEY=re_...
+ENQUIRY_NOTIFY_TO=you@example.com
+```
+
+Without these, enquiries still save to `data/enquiries.jsonl`.
+
 ## Enquiry API
 
 `POST /api/enquiry` accepts JSON:

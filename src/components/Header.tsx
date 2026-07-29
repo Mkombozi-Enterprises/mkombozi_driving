@@ -51,7 +51,12 @@ export function Header() {
           </a>
           <nav className="nav-links" aria-label="Primary">
             {navLinks.map((l) => (
-              <a key={l.href} href={l.href}>
+              <a
+                key={l.href}
+                href={l.href}
+                data-track="header-nav"
+                data-track-label={l.href.replace("#", "")}
+              >
                 {l.label}
               </a>
             ))}

@@ -4,8 +4,9 @@ import { useCallback, useEffect, useState } from "react";
 import { journeyPosts } from "@/lib/site";
 
 /**
- * Signature element: a dashed centre-line (road marking) with kilometre posts.
- * Progress tracks scroll; posts jump to sections. Encodes "licence = a route".
+ * Signature: dashed centre-line + km posts (desktop).
+ * Mobile: compact progress indicator only — reduces nav competition with header.
+ * data-track attrs ready for analytics (spine vs header).
  */
 export function JourneySpine() {
   const [active, setActive] = useState(0);
@@ -18,13 +19,11 @@ export function JourneySpine() {
     const p = scrollable > 0 ? window.scrollY / scrollable : 0;
     setProgress(Math.min(1, Math.max(0, p)));
 
-    // Marker rides the track (12vh → bottom 10vh)
     const trackStart = window.innerHeight * 0.12;
     const trackEnd = window.innerHeight * 0.9;
     const trackLen = trackEnd - trackStart;
     setMarkerTop(trackStart + trackLen * Math.min(1, Math.max(0, p)));
 
-    // Active post = section closest to viewport centre
     let best = 0;
     let bestDist = Infinity;
     const mid = window.scrollY + window.innerHeight * 0.35;
@@ -71,9 +70,9 @@ export function JourneySpine() {
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  // Vertical positions for posts along the fixed track
   const last = Math.max(journeyPosts.length - 1, 1);
   const postPositions = journeyPosts.map((_, i) => `${(i / last) * 100}%`);
+  const current = journeyPosts[active];
 
   return (
     <>
@@ -102,6 +101,8 @@ export function JourneySpine() {
                 onClick={() => goTo(post.id)}
                 aria-label={`Go to ${post.label}`}
                 aria-current={isActive ? "true" : undefined}
+                data-track="spine-post"
+                data-track-label={post.id}
               >
                 {post.short}
                 <span className="journey-spine__label">{post.label}</span>
@@ -111,23 +112,21 @@ export function JourneySpine() {
         </div>
       </nav>
 
-      <nav className="journey-spine-mobile" aria-label="Page journey">
-        <div className="journey-spine-mobile__inner">
-          {journeyPosts.map((post, i) => (
-            <button
-              key={post.id}
-              type="button"
-              className={`journey-spine-mobile__post${i === active ? " is-active" : ""}`}
-              onClick={() => goTo(post.id)}
-              aria-label={`Go to ${post.label}`}
-              aria-current={i === active ? "true" : undefined}
-            >
-              <span className="journey-spine-mobile__num">{post.short}</span>
-              <span>{post.label}</span>
-            </button>
-          ))}
+      {/* Mobile: progress only — not a second nav system */}
+      <div
+        className="journey-progress-mobile"
+        role="status"
+        aria-live="polite"
+        aria-label={`Journey step ${active + 1} of ${journeyPosts.length}: ${current?.label}`}
+      >
+        <div className="journey-progress-mobile__bar" aria-hidden>
+          <span style={{ width: `${((active + 1) / journeyPosts.length) * 100}%` }} />
         </div>
-      </nav>
+        <p className="journey-progress-mobile__label">
+          Step {active + 1} of {journeyPosts.length}
+          <span> · {current?.label}</span>
+        </p>
+      </div>
     </>
   );
 }

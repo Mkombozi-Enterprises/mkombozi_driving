@@ -11,9 +11,10 @@ import {
   FleetSection,
   FounderSection,
   InstructorsSection,
+  OriginSection,
   PricingSection,
-  ReviewsSection,
   RouteSection,
+  WallSection,
 } from "@/components/Sections";
 import { Footer } from "@/components/Footer";
 
@@ -31,12 +32,13 @@ export default function HomePage() {
           <Hero hasHeroPhoto={hasHeroPhoto} />
           <AboutSection />
           <FounderSection />
+          <OriginSection />
           <CoursesSection />
           <RouteSection />
           <FleetSection />
           <PricingSection />
           <InstructorsSection />
-          <ReviewsSection />
+          <WallSection />
           <FAQSection />
           <ContactSection />
         </main>

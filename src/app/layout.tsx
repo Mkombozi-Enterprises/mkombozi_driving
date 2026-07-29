@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Barlow_Condensed, Figtree } from "next/font/google";
+import { Barlow_Condensed, Caveat, Figtree } from "next/font/google";
+import { JsonLd } from "@/components/JsonLd";
 import "./globals.css";
 
 const display = Barlow_Condensed({
@@ -16,10 +17,25 @@ const body = Figtree({
   display: "swap",
 });
 
+const hand = Caveat({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-hand-loaded",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Mkombozi Driving School | NTSA-Certified Driving Lessons in Kenya",
+  title: "Mkombozi Driving School | NTSA Driving Lessons Kakamega & Lumakanda",
   description:
-    "Mkombozi Driving School — NTSA-certified instructors, manual & automatic lessons, motorcycle, truck and PSV training, flexible schedules and honest pricing in Kakamega County, Kenya.",
+    "NTSA-certified driving school in Lumakanda, Kakamega County. Class A–D lessons — manual, automatic, motorcycle, truck and PSV. Flexible schedules, M-Pesa, honest pricing.",
+  keywords: [
+    "driving school Kakamega",
+    "NTSA driving school",
+    "Class B driving lessons Lumakanda",
+    "driving school near me Kenya",
+    "PSV training Kakamega",
+    "Mkombozi Driving School",
+  ],
 };
 
 export default function RootLayout({
@@ -28,16 +44,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable}`}>
+    <html lang="en" className={`${display.variable} ${body.variable} ${hand.variable}`}>
       <body
         style={
           {
-            ["--font-display" as string]: "var(--font-display-loaded), 'Arial Narrow', sans-serif",
+            ["--font-display" as string]:
+              "var(--font-display-loaded), 'Arial Narrow', sans-serif",
             ["--font-body" as string]: "var(--font-body-loaded), system-ui, sans-serif",
-            ["--font-head" as string]: "var(--font-display-loaded), 'Arial Narrow', sans-serif",
+            ["--font-head" as string]:
+              "var(--font-display-loaded), 'Arial Narrow', sans-serif",
+            ["--font-hand" as string]: "var(--font-hand-loaded), cursive",
           } as React.CSSProperties
         }
       >
+        <JsonLd />
         {children}
       </body>
     </html>

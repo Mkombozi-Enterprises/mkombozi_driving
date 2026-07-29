@@ -3,6 +3,7 @@ import { mkdir, appendFile } from "fs/promises";
 import path from "path";
 import { NextResponse } from "next/server";
 import { validateEnquiry, type EnquiryRecord } from "@/lib/enquiry";
+import { notifyStaffEnquiry } from "@/lib/notify";
 
 export const runtime = "nodejs";
 
@@ -79,7 +80,6 @@ export async function POST(req: Request) {
     );
   }
 
-  // Ready hook: swap this for email/CRM later without changing the form contract
   console.info("[enquiry] received", {
     id: record.id,
     name: record.name,
@@ -87,10 +87,13 @@ export async function POST(req: Request) {
     course: record.course,
   });
 
+  // Non-blocking staff notify (Resend when env configured)
+  void notifyStaffEnquiry(record);
+
   return NextResponse.json({
     ok: true,
     id: record.id,
-    message: "Enquiry received. We'll be in touch within 24 hours.",
+    message: "Enquiry received. We typically reply within 2 hours during open hours.",
   });
 }
 

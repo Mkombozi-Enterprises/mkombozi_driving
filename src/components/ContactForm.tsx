@@ -1,17 +1,30 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
-import { IconCheck } from "./Icons";
+import { FormEvent, useEffect, useMemo, useState } from "react";
+import { IconCheck, IconWhatsApp } from "./Icons";
 import { courseSelectOptions } from "@/lib/site";
 import type { EnquiryFieldErrors } from "@/lib/enquiry";
+import { carrierLabel, detectCarrier } from "@/lib/carrier";
+import { whatsappUrl } from "@/lib/whatsapp";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [course, setCourse] = useState("");
+  const [phone, setPhone] = useState("");
+  const [name, setName] = useState("");
   const [errors, setErrors] = useState<EnquiryFieldErrors>({});
   const [enquiryId, setEnquiryId] = useState<string | null>(null);
+  const [successCourse, setSuccessCourse] = useState("");
+
+  const durationHint = useMemo(() => {
+    const opt = courseSelectOptions.find((o) => o.value === course);
+    return opt?.duration ?? null;
+  }, [course]);
+
+  const carrier = useMemo(() => detectCarrier(phone), [phone]);
+  const carrierText = carrierLabel(carrier);
 
   useEffect(() => {
     const onChoose = (e: Event) => {
@@ -41,7 +54,7 @@ export function ContactForm() {
       email: String(fd.get("email") || ""),
       course: String(fd.get("course") || course || ""),
       message: String(fd.get("message") || ""),
-      website: String(fd.get("website") || ""), // honeypot
+      website: String(fd.get("website") || ""),
     };
 
     try {
@@ -54,7 +67,6 @@ export function ContactForm() {
         ok?: boolean;
         id?: string;
         errors?: EnquiryFieldErrors;
-        message?: string;
       };
 
       if (!res.ok || !data.ok) {
@@ -64,8 +76,11 @@ export function ContactForm() {
       }
 
       setEnquiryId(data.id || null);
+      setName(payload.name);
+      setSuccessCourse(payload.course);
       setStatus("success");
       form.reset();
+      setPhone("");
       setCourse("");
     } catch {
       setErrors({
@@ -76,12 +91,19 @@ export function ContactForm() {
   };
 
   if (status === "success") {
+    const wa = whatsappUrl({
+      context: "form-success",
+      course: successCourse || undefined,
+      name: name || undefined,
+    });
     return (
       <div className="form-success is-visible" id="form-success" role="status">
         <IconCheck />
-        <h4>Asante! Enquiry received.</h4>
+        <h4 className="form-success-title">Asante sana!</h4>
         <p>
-          We&apos;ll be in touch within 24 hours to confirm your lesson details.
+          We&apos;ve received your enquiry. <em className="swahili-soft">Safari njema</em>{" "}
+          starts here. We typically reply within <strong>2 hours</strong> during open
+          hours.
           {enquiryId ? (
             <>
               {" "}
@@ -89,6 +111,19 @@ export function ContactForm() {
             </>
           ) : null}
         </p>
+        <p className="form-success-nudge">
+          Need faster? Continue on WhatsApp — we&apos;ll already have your context.
+        </p>
+        <a
+          href={wa}
+          className="btn btn-wa btn-block"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-track="form-success-whatsapp"
+        >
+          <IconWhatsApp size="sm" />
+          WhatsApp us now
+        </a>
       </div>
     );
   }
@@ -101,16 +136,9 @@ export function ContactForm() {
         </p>
       ) : null}
 
-      {/* Honeypot — hidden from users */}
       <div className="hp-field" aria-hidden="true">
         <label htmlFor="website">Website</label>
-        <input
-          type="text"
-          id="website"
-          name="website"
-          tabIndex={-1}
-          autoComplete="off"
-        />
+        <input type="text" id="website" name="website" tabIndex={-1} autoComplete="off" />
       </div>
 
       <div className="form-row">
@@ -126,6 +154,7 @@ export function ContactForm() {
             disabled={status === "submitting"}
             aria-invalid={!!errors.name}
             aria-describedby={errors.name ? "err-name" : undefined}
+            onChange={(e) => setName(e.target.value)}
           />
           {errors.name ? (
             <span id="err-name" className="field-error">
@@ -143,9 +172,16 @@ export function ContactForm() {
             autoComplete="tel"
             placeholder="07XX XXX XXX"
             disabled={status === "submitting"}
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             aria-invalid={!!errors.phone}
-            aria-describedby={errors.phone ? "err-phone" : undefined}
+            aria-describedby={errors.phone ? "err-phone" : carrierText ? "carrier-hint" : undefined}
           />
+          {carrierText ? (
+            <span id="carrier-hint" className="field-hint">
+              Looks like <strong>{carrierText}</strong>
+            </span>
+          ) : null}
           {errors.phone ? (
             <span id="err-phone" className="field-error">
               {errors.phone}
@@ -182,11 +218,16 @@ export function ContactForm() {
         >
           <option value="">Select a course</option>
           {courseSelectOptions.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt === "Other" ? "Other / Not sure yet" : opt.replace(" – ", " — ")}
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
             </option>
           ))}
         </select>
+        {durationHint ? (
+          <span className="field-hint">
+            Typical duration: <strong>{durationHint}</strong>
+          </span>
+        ) : null}
       </div>
       <div className={`field${errors.message ? " has-error" : ""}`}>
         <label htmlFor="message">Message</label>
@@ -209,7 +250,7 @@ export function ContactForm() {
         className="btn btn-primary btn-block"
         disabled={status === "submitting"}
       >
-        {status === "submitting" ? "Sending…" : "Send Enquiry"}
+        {status === "submitting" ? "Tuko njiani… preparing your route." : "Send Enquiry"}
       </button>
     </form>
   );
