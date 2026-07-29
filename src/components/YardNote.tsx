@@ -1,7 +1,10 @@
-import { yardNote } from "@/lib/site";
+"use client";
+
+import { useSiteContent } from "@/lib/cms/provider";
 
 /** Handwritten-style pin — feels updated by a person, not a cron job */
 export function YardNote() {
+  const { yardNote } = useSiteContent();
   return (
     <aside className="yard-note" aria-label="Note from the yard">
       <span className="yard-note__pin" aria-hidden>

@@ -1,11 +1,13 @@
-import { site } from "@/lib/site";
-
 /** Build a wa.me link with pre-filled message (one-tap enrol path). */
-export function whatsappUrl(opts?: {
-  course?: string;
-  name?: string;
-  context?: "general" | "form-success" | "fleet" | "review";
-}): string {
+
+export function whatsappUrl(
+  whatsappNumber: string,
+  opts?: {
+    course?: string;
+    name?: string;
+    context?: "general" | "form-success" | "fleet" | "review";
+  }
+): string {
   const course = opts?.course?.trim();
   const name = opts?.name?.trim();
   let text: string;
@@ -31,5 +33,5 @@ export function whatsappUrl(opts?: {
   }
 
   text = `${text} Safari njema!`;
-  return `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(text)}`;
+  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
 }

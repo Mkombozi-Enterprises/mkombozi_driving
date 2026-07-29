@@ -2,14 +2,15 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { IconCheck, IconWhatsApp } from "./Icons";
-import { courseSelectOptions } from "@/lib/site";
 import type { EnquiryFieldErrors } from "@/lib/enquiry";
 import { carrierLabel, detectCarrier } from "@/lib/carrier";
 import { whatsappUrl } from "@/lib/whatsapp";
+import { useSiteContent } from "@/lib/cms/provider";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
 export function ContactForm() {
+  const { site, courseSelectOptions } = useSiteContent();
   const [status, setStatus] = useState<Status>("idle");
   const [course, setCourse] = useState("");
   const [phone, setPhone] = useState("");
@@ -21,7 +22,7 @@ export function ContactForm() {
   const durationHint = useMemo(() => {
     const opt = courseSelectOptions.find((o) => o.value === course);
     return opt?.duration ?? null;
-  }, [course]);
+  }, [course, courseSelectOptions]);
 
   const carrier = useMemo(() => detectCarrier(phone), [phone]);
   const carrierText = carrierLabel(carrier);
@@ -91,7 +92,7 @@ export function ContactForm() {
   };
 
   if (status === "success") {
-    const wa = whatsappUrl({
+    const wa = whatsappUrl(site.whatsapp, {
       context: "form-success",
       course: successCourse || undefined,
       name: name || undefined,

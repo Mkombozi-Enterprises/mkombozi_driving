@@ -3,15 +3,17 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { TimeGreeting } from "./TimeGreeting";
-import { passesTicker } from "@/lib/site";
+import { useSiteContent } from "@/lib/cms/provider";
+import { passesTickerLabel } from "@/lib/cms/greetings";
 
 type HeroProps = {
   hasHeroPhoto?: boolean;
 };
 
 export function Hero({ hasHeroPhoto = false }: HeroProps) {
+  const { site, passesTicker } = useSiteContent();
   const rowRef = useRef<HTMLDivElement>(null);
-  const weekLabel = passesTicker.hasWeekLabel(passesTicker.thisWeekCount);
+  const weekLabel = passesTickerLabel(passesTicker.thisWeekCount);
 
   useEffect(() => {
     const root = rowRef.current;
@@ -68,9 +70,7 @@ export function Hero({ hasHeroPhoto = false }: HeroProps) {
           </h1>
           <p className="hero-sub">
             Mkombozi means <em>liberator</em> — and that&apos;s exactly what a driving
-            licence gives you. Patient, professional instruction for every category of
-            Kenyan licence Category A (motorcycles) and Category B (light vehicles) —
-            A1–A3 and B1–B3.
+            licence gives you. {site.heroSub}
           </p>
           {weekLabel ? (
             <p className="passes-ticker" role="status">

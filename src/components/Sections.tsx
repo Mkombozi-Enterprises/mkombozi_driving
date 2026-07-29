@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { Reveal } from "./Reveal";
 import {
@@ -12,27 +14,16 @@ import {
   IconWallet,
   IconWhatsApp,
 } from "./Icons";
-import {
-  addOns,
-  faqs,
-  fleet,
-  founderQuote,
-  instructors,
-  licenceGroups,
-  packages,
-  routeStops,
-  site,
-  wallOfPasses,
-  yardToday,
-} from "@/lib/site";
+import { useSiteContent } from "@/lib/cms/provider";
+import { whatsappUrl } from "@/lib/whatsapp";
 import { ContactForm } from "./ContactForm";
 import { FAQList } from "./FAQList";
-import { whatsappUrl } from "@/lib/whatsapp";
 import { AudioPill } from "./AudioPill";
 import { YardNote } from "./YardNote";
 import { YardStatus } from "./YardStatus";
 
 export function AboutSection() {
+  const { site } = useSiteContent();
   return (
     <section className="section-pad bg-chalk" id="about">
       <div className="container">
@@ -40,12 +31,7 @@ export function AboutSection() {
           <Reveal className="about-lead">
             <span className="eyebrow">Why Mkombozi</span>
             <h2 className="headline">Freedom is earned one lesson at a time.</h2>
-            <p>
-              We started Mkombozi Driving School on a simple belief: a driving licence
-              isn&apos;t just a card, it&apos;s independence — for work, for family, for the
-              freedom to move on your own terms. Every lesson is built around that goal,
-              at a pace that respects where you&apos;re starting from.
-            </p>
+            <p>{site.aboutLead}</p>
             <p className="quote">
               We teach you to drive, not just to{" "}
               <span className="script-word">pass</span>.
@@ -92,6 +78,7 @@ export function AboutSection() {
 }
 
 export function FounderSection() {
+  const { site, founderQuote } = useSiteContent();
   return (
     <section className="founder-note bg-chalk-dim">
       <div className="container">
@@ -100,50 +87,35 @@ export function FounderSection() {
             <span className="eyebrow">A Word From Our Founders</span>
 
             <div className="founder-portraits" role="group" aria-label="Founders">
-              <figure className="founder-portrait">
-                <div className="founder-portrait__frame">
-                  <Image
-                    src="/images/EdithFedha.png"
-                    alt="Edith Fedha, Co-founder of Mkombozi Driving School"
-                    width={400}
-                    height={480}
-                    className="founder-portrait__img"
-                    sizes="(max-width: 640px) 45vw, 180px"
-                  />
-                  <span className="founder-portrait__tick" aria-hidden />
-                </div>
-                <figcaption>
-                  <strong>Edith Fedha</strong>
-                  <span>Founder &amp; Director</span>
-                </figcaption>
-              </figure>
-
-              <figure className="founder-portrait founder-portrait--offset">
-                <div className="founder-portrait__frame">
-                  <Image
-                    src="/images/EdwardMusamusi.png"
-                    alt="Edward Musamusi, Co-founder of Mkombozi Driving School"
-                    width={400}
-                    height={480}
-                    className="founder-portrait__img"
-                    sizes="(max-width: 640px) 45vw, 180px"
-                  />
-                  <span className="founder-portrait__tick" aria-hidden />
-                </div>
-                <figcaption>
-                  <strong>Edward Musamusi</strong>
-                  <span>Founder &amp; Director</span>
-                </figcaption>
-              </figure>
+              {site.founders.map((f, i) => (
+                <figure
+                  key={f.name}
+                  className={`founder-portrait${i === 1 ? " founder-portrait--offset" : ""}`}
+                >
+                  <div className="founder-portrait__frame">
+                    <Image
+                      src={f.image}
+                      alt={f.alt}
+                      width={400}
+                      height={480}
+                      className="founder-portrait__img"
+                      sizes="(max-width: 640px) 45vw, 180px"
+                    />
+                    <span className="founder-portrait__tick" aria-hidden />
+                  </div>
+                  <figcaption>
+                    <strong>{f.name}</strong>
+                    <span>{f.role}</span>
+                  </figcaption>
+                </figure>
+              ))}
             </div>
 
             <div className="founder-text">
               <p className="founder-quote">
                 &ldquo;<em>{founderQuote}</em>&rdquo;
               </p>
-              <p className="founder-name">
-                — Edith Fedha &amp; Bishop Edward Musamusi, Founders and Directors
-              </p>
+              <p className="founder-name">{site.founderAttribution}</p>
               <AudioPill
                 src={site.founderAudioSrc}
                 label="Press play to hear from our founders"
@@ -165,27 +137,17 @@ export function FounderSection() {
 
 /** Expanded origin band — specific, not “we are passionate” */
 export function OriginSection() {
+  const { site } = useSiteContent();
   return (
     <section className="origin-band" id="origin" aria-labelledby="origin-title">
       <div className="container">
         <Reveal>
           <p className="origin-kicker">The name · The yard · The belief</p>
-          <h2 id="origin-title" className="origin-title">
-            Why <em>Mkombozi</em>
-          </h2>
+          <h2 id="origin-title" className="origin-title">{site.originTitle}</h2>
           <div className="origin-grid">
-            <p>
-              <strong>Mkombozi</strong> means the one who liberates.
-            </p>
-            <p>
-              In 2012, after watching too many young people in Kakamega struggle to find
-              work because they couldn&apos;t drive, we opened a small yard off Mumias
-              Road with two cars and a belief: knowing the road is freedom.
-            </p>
-            <p>
-              Today we&apos;re NTSA-registered, but we still teach like it&apos;s your first
-              time holding the wheel — because it usually is.
-            </p>
+            {site.originParagraphs.map((p) => (
+              <p key={p.slice(0, 24)}>{p}</p>
+            ))}
           </div>
         </Reveal>
       </div>
@@ -194,6 +156,7 @@ export function OriginSection() {
 }
 
 export function CoursesSection() {
+  const { licenceGroups, addOns } = useSiteContent();
   return (
     <section className="section-pad bg-chalk-dim" id="courses">
       <div className="container courses-with-status">
@@ -272,6 +235,7 @@ export function CoursesSection() {
 }
 
 export function RouteSection() {
+  const { routeStops, yardToday } = useSiteContent();
   return (
     <section className="section-pad bg-asphalt route-section" id="route">
       <div className="container">
@@ -337,6 +301,7 @@ export function RouteSection() {
 }
 
 export function FleetSection() {
+  const { fleet, site } = useSiteContent();
   return (
     <section className="section-pad bg-chalk" id="fleet">
       <div className="container">
@@ -376,7 +341,7 @@ export function FleetSection() {
                 Book a yard visit
               </a>
               <a
-                href={whatsappUrl({ context: "fleet" })}
+                href={whatsappUrl(site.whatsapp, { context: "fleet" })}
                 className="btn btn-ghost on-light btn-small"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -406,6 +371,7 @@ export function FleetSection() {
 }
 
 export function PricingSection() {
+  const { packages } = useSiteContent();
   const pkg = packages[0];
 
   return (
@@ -455,6 +421,7 @@ export function PricingSection() {
 }
 
 export function InstructorsSection() {
+  const { instructors } = useSiteContent();
   return (
     <section className="section-pad bg-chalk" id="instructors">
       <div className="container">
@@ -468,24 +435,39 @@ export function InstructorsSection() {
         <div className="instructor-grid">
           {instructors.map((p, i) => (
             <Reveal
-              key={p.name}
+              key={p.id || p.name}
               className="instructor-card"
               delay={((i % 4) + 1) as 1 | 2 | 3 | 4}
             >
-              <div className="avatar-sil" aria-hidden>
-                <svg viewBox="0 0 80 80" className="avatar-sil__svg">
-                  <circle cx="40" cy="40" r="40" fill="currentColor" opacity="0.12" />
-                  <circle cx="40" cy="30" r="14" fill="currentColor" opacity="0.45" />
-                  <path
-                    d="M16 68c4-14 14-22 24-22s20 8 24 22"
-                    fill="currentColor"
-                    opacity="0.45"
+              {p.photo ? (
+                <div className="avatar-photo-wrap">
+                  <Image
+                    src={p.photo}
+                    alt={p.name}
+                    width={110}
+                    height={110}
+                    className="avatar-photo"
                   />
-                </svg>
-                <span className="avatar-sil__badge" title="NTSA-certified instructor">
-                  NTSA
-                </span>
-              </div>
+                  <span className="avatar-sil__badge" title="NTSA-certified instructor">
+                    NTSA
+                  </span>
+                </div>
+              ) : (
+                <div className="avatar-sil" aria-hidden>
+                  <svg viewBox="0 0 80 80" className="avatar-sil__svg">
+                    <circle cx="40" cy="40" r="40" fill="currentColor" opacity="0.12" />
+                    <circle cx="40" cy="30" r="14" fill="currentColor" opacity="0.45" />
+                    <path
+                      d="M16 68c4-14 14-22 24-22s20 8 24 22"
+                      fill="currentColor"
+                      opacity="0.45"
+                    />
+                  </svg>
+                  <span className="avatar-sil__badge" title="NTSA-certified instructor">
+                    NTSA
+                  </span>
+                </div>
+              )}
               <h4>{p.name}</h4>
               <p className="instructor-super">{p.superpower}</p>
               <div className="instructor-role">
@@ -508,6 +490,7 @@ export function InstructorsSection() {
 
 /** Wall of Passes — factual, accumulative social proof */
 export function WallSection() {
+  const { wallOfPasses, site } = useSiteContent();
   const hasPasses = wallOfPasses.length > 0;
 
   return (
@@ -552,7 +535,7 @@ export function WallSection() {
         <p className="wall-harvest">
           Graduates:{" "}
           <a
-            href={whatsappUrl({ context: "review" })}
+            href={whatsappUrl(site.whatsapp, { context: "review" })}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -570,6 +553,7 @@ export function WallSection() {
 }
 
 export function FAQSection() {
+  const { faqs } = useSiteContent();
   return (
     <section className="section-pad bg-chalk" id="faq">
       <div className="container">
@@ -578,7 +562,7 @@ export function FAQSection() {
           <h2 className="headline">Frequently asked questions</h2>
         </Reveal>
         <Reveal>
-          <FAQList items={[...faqs]} />
+          <FAQList items={faqs} />
         </Reveal>
       </div>
     </section>
@@ -586,6 +570,7 @@ export function FAQSection() {
 }
 
 export function ContactSection() {
+  const { site, yardToday } = useSiteContent();
   return (
     <section className="section-pad bg-chalk-dim" id="contact">
       <div className="container">
@@ -611,7 +596,7 @@ export function ContactSection() {
                     <a href={`tel:${site.phoneTel}`}>{site.phone}</a>
                     {" · "}
                     <a
-                      href={whatsappUrl({ context: "general" })}
+                      href={whatsappUrl(site.whatsapp, { context: "general" })}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

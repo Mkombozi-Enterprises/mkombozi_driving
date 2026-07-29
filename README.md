@@ -22,6 +22,16 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+### CMS (Next.js admin + optional Supabase)
+
+Edit site content at **[http://localhost:3000/admin](http://localhost:3000/admin)**.
+
+- Default password: `mkombozi-admin` (set `ADMIN_PASSWORD` in `.env.local`)
+- File store: `content/site.json` (fallback)
+- **Supabase**: run `supabase/cms-setup.sql`, set `SUPABASE_URL` + `SUPABASE_SECRET_KEY` in `.env.local`
+- Instructor photos: upload in Admin → Instructors (Storage bucket `cms-media`)
+- Docs: `docs/CMS.md`
+
 ```bash
 npm run build
 npm start

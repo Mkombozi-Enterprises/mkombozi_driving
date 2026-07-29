@@ -1,24 +1,18 @@
 "use client";
 
 import { IconWhatsApp } from "./Icons";
+import { useSiteContent } from "@/lib/cms/provider";
 import { whatsappUrl } from "@/lib/whatsapp";
 
-/**
- * Mobile-only sticky conversion bar — plugs the "leaky bucket" where
- * desktop Enrol disappears into the hamburger menu.
- */
 export function MobileCtaBar() {
+  const { site } = useSiteContent();
   return (
     <div className="mobile-cta-bar" role="region" aria-label="Quick actions">
-      <a
-        href="#contact"
-        className="mobile-cta-bar__book"
-        data-track="mobile-bar-book"
-      >
+      <a href="#contact" className="mobile-cta-bar__book" data-track="mobile-bar-book">
         Book Lesson
       </a>
       <a
-        href={whatsappUrl({ context: "general" })}
+        href={whatsappUrl(site.whatsapp, { context: "general" })}
         className="mobile-cta-bar__wa"
         target="_blank"
         rel="noopener noreferrer"

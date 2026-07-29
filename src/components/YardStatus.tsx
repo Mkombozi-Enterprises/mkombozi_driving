@@ -1,6 +1,9 @@
-import { yardToday } from "@/lib/site";
+"use client";
+
+import { useSiteContent } from "@/lib/cms/provider";
 
 export function YardStatus() {
+  const { yardToday } = useSiteContent();
   return (
     <div className="yard-status" role="region" aria-label="Yard schedule">
       <h3 className="yard-status__title">{yardToday.title}</h3>

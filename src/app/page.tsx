@@ -1,5 +1,7 @@
 import { existsSync } from "fs";
 import path from "path";
+import { loadContent } from "@/lib/cms/store";
+import { SiteProvider } from "@/lib/cms/provider";
 import { Header } from "@/components/Header";
 import { JourneySpine } from "@/components/JourneySpine";
 import { Hero } from "@/components/Hero";
@@ -18,13 +20,16 @@ import {
 } from "@/components/Sections";
 import { Footer } from "@/components/Footer";
 
-export default function HomePage() {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const content = await loadContent();
   const hasHeroPhoto = existsSync(
     path.join(process.cwd(), "public", "images", "hero.jpg")
   );
 
   return (
-    <>
+    <SiteProvider content={content}>
       <Header />
       <JourneySpine />
       <div className="page-shell">
@@ -44,6 +49,6 @@ export default function HomePage() {
         </main>
         <Footer />
       </div>
-    </>
+    </SiteProvider>
   );
 }

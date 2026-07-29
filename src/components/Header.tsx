@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { IconClose, IconMenu } from "./Icons";
 import { BrandLogo } from "./BrandLogo";
-import { navLinks, site } from "@/lib/site";
+import { useSiteContent } from "@/lib/cms/provider";
 
 export function Header() {
+  const { site, navLinks } = useSiteContent();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 

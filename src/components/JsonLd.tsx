@@ -1,7 +1,8 @@
-import { site } from "@/lib/site";
+import { loadContent } from "@/lib/cms/store";
 
 /** LocalBusiness / DrivingSchool structured data for local SEO */
-export function JsonLd() {
+export async function JsonLd() {
+  const { site } = await loadContent();
   const data = {
     "@context": "https://schema.org",
     "@type": "DrivingSchool",

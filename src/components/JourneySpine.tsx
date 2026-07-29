@@ -1,13 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { journeyPosts } from "@/lib/site";
+import { useSiteContent } from "@/lib/cms/provider";
 
 /**
  * Desktop spine starts *below* the sticky nav stack so step 01 is never covered.
  * Marker position is relative to the posts container inside the spine.
  */
 export function JourneySpine() {
+  const { journeyPosts } = useSiteContent();
   const postsRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const [markerTop, setMarkerTop] = useState(0);
@@ -42,7 +43,7 @@ export function JourneySpine() {
       }
     });
     setActive(best);
-  }, []);
+  }, [journeyPosts]);
 
   useEffect(() => {
     update();

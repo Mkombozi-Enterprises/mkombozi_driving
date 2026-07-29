@@ -1,21 +1,23 @@
+"use client";
+
 import Image from "next/image";
 import { IconWhatsApp } from "./Icons";
-import { site } from "@/lib/site";
+import { useSiteContent } from "@/lib/cms/provider";
 import { whatsappUrl } from "@/lib/whatsapp";
 import { MobileCtaBar } from "./MobileCtaBar";
 
 export function Footer() {
+  const { site } = useSiteContent();
   const year = new Date().getFullYear();
 
   return (
     <>
       <footer className="site-footer">
-        {/* Full-bleed: logo panel edge-to-edge left, content right */}
         <div className="footer-band">
           <a
             href="#home"
             className="footer-logo-panel"
-            aria-label="Mkombozi Driving School home"
+            aria-label={`${site.name} home`}
           >
             <span className="footer-logo-panel__fill" aria-hidden>
               <Image
@@ -35,7 +37,7 @@ export function Footer() {
           <div className="footer-main">
             <div className="footer-grid">
               <div className="footer-brand">
-                <p className="footer-brand-name">Mkombozi Driving School</p>
+                <p className="footer-brand-name">{site.name}</p>
                 <p>
                   Your road to independence. NTSA-registered driver training in Kakamega
                   County and beyond.
@@ -104,7 +106,7 @@ export function Footer() {
                   </li>
                   <li>
                     <a
-                      href={whatsappUrl({ context: "general" })}
+                      href={whatsappUrl(site.whatsapp, { context: "general" })}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -116,26 +118,28 @@ export function Footer() {
             </div>
             <div className="footer-bottom">
               <span>Built by hand in Kakamega. Safari njema. · {year}</span>
-              <span>Mkombozi Driving School · Lumakanda</span>
+              <span>
+                {site.name} · Lumakanda
+              </span>
             </div>
           </div>
         </div>
       </footer>
 
-      <WhatsAppHumanFloat />
+      <WhatsAppHumanFloat whatsapp={site.whatsapp} />
       <MobileCtaBar />
     </>
   );
 }
 
-function WhatsAppHumanFloat() {
+function WhatsAppHumanFloat({ whatsapp }: { whatsapp: string }) {
   return (
     <div className="wa-human wa-float--desktop">
       <div className="wa-human__bubble" role="status">
         Hi! Need help choosing between Category A and B? Text us.
       </div>
       <a
-        href={whatsappUrl({ context: "general" })}
+        href={whatsappUrl(whatsapp, { context: "general" })}
         className="wa-float wa-human__btn"
         aria-label="Chat on WhatsApp"
         target="_blank"
