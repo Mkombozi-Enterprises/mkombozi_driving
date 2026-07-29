@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-29T11:44:43.382Z",
+  "updatedAt": "2026-07-29T12:35:07.128Z",
   "site": {
     "name": "Mkombozi Driving School",
     "phone": "+254 720 575778",
@@ -130,6 +130,10 @@
     {
       "href": "#wall",
       "label": "Wall of Passes"
+    },
+    {
+      "href": "#resources",
+      "label": "Resources"
     },
     {
       "href": "#faq",
@@ -440,6 +444,17 @@
       "value": "Other",
       "label": "Other / Not sure yet",
       "duration": "We'll advise"
+    }
+  ],
+  "resources": [
+    {
+      "id": "kenya-learner-handbook-lmv",
+      "title": "Kenya Learner Driver Handbook — Light Motor Vehicle",
+      "description": "Official-style learner handbook for light motor vehicles. Study alongside your theory classes and keep it handy before the NTSA test.",
+      "kind": "pdf",
+      "url": "/documents/KENYA-LEARNER-DRIVER-HANDBOOK-Light-Motor-Vehicle.pdf",
+      "category": "Handbooks",
+      "addedAt": "2026-07-29"
     }
   ]
 }

@@ -6,11 +6,13 @@ import {
   cmsLogout,
   saveCmsContentAction,
   uploadInstructorPhotoAction,
+  uploadResourceFileAction,
 } from "@/app/actions/cms";
 import type {
   AddOn,
   FaqItem,
   Instructor,
+  ResourceItem,
   SiteContent,
   WallPass,
 } from "@/lib/cms/types";
@@ -25,6 +27,7 @@ const SECTIONS = [
   { id: "courses", label: "Categories A & B" },
   { id: "addons", label: "Add-ons" },
   { id: "packages", label: "Pricing package" },
+  { id: "resources", label: "Resource centre" },
   { id: "instructors", label: "Instructors" },
   { id: "faqs", label: "FAQ" },
   { id: "fleet", label: "Fleet" },
@@ -154,6 +157,9 @@ export function AdminDashboard({ initial }: { initial: SiteContent }) {
           )}
           {section === "packages" && (
             <PackageFields content={content} setContent={setContent} />
+          )}
+          {section === "resources" && (
+            <ResourcesFields content={content} setContent={setContent} />
           )}
           {section === "instructors" && (
             <InstructorsFields content={content} setContent={setContent} />
@@ -898,6 +904,171 @@ function PackageFields({ content, setContent }: EditorProps) {
         }
         multiline
       />
+    </div>
+  );
+}
+
+function ResourcesFields({ content, setContent }: EditorProps) {
+  const [uploading, setUploading] = useState(false);
+  const [uploadErr, setUploadErr] = useState<string | null>(null);
+
+  const resources = content.resources || [];
+
+  const addBlank = () => {
+    const item: ResourceItem = {
+      id: uid("res"),
+      title: "New resource",
+      description: "",
+      kind: "pdf",
+      url: "",
+      category: "Guides",
+      addedAt: new Date().toISOString().slice(0, 10),
+    };
+    setContent((c) => ({
+      ...c,
+      resources: [...(c.resources || []), item],
+    }));
+  };
+
+  const onUpload = async (i: number, file: File | null) => {
+    if (!file) return;
+    setUploadErr(null);
+    setUploading(true);
+    const fd = new FormData();
+    fd.set("file", file);
+    const res = await uploadResourceFileAction(fd);
+    setUploading(false);
+    if (!res.ok) {
+      setUploadErr(res.error);
+      return;
+    }
+    setContent((c) => {
+      const list = [...(c.resources || [])];
+      list[i] = {
+        ...list[i],
+        url: res.url,
+        kind: res.kind,
+        title:
+          list[i].title === "New resource"
+            ? file.name.replace(/\.[^.]+$/, "").replace(/[-_]/g, " ")
+            : list[i].title,
+      };
+      return { ...c, resources: list };
+    });
+  };
+
+  return (
+    <div className="cms-card">
+      <div className="cms-list-head">
+        <h3>Resource centre</h3>
+        <button type="button" className="cms-btn cms-btn-ghost" onClick={addBlank}>
+          + Add resource
+        </button>
+      </div>
+      <p style={{ color: "#9a9da6", fontSize: "0.85rem", marginTop: 0 }}>
+        Upload a PDF or image (Supabase Storage or <code>public/documents</code>), then
+        click <strong>Save changes</strong>. You can also paste a public URL.
+      </p>
+      {uploadErr ? (
+        <div className="cms-banner err" role="alert">
+          {uploadErr}
+        </div>
+      ) : null}
+      {uploading ? (
+        <p style={{ color: "#e9a820", fontSize: "0.85rem" }}>Uploading file…</p>
+      ) : null}
+      {resources.length === 0 ? (
+        <p style={{ color: "#9a9da6" }}>No resources yet.</p>
+      ) : null}
+      {resources.map((r, i) => (
+        <div key={r.id} className="cms-list-item">
+          <div className="cms-list-head">
+            <strong>{r.title || `Resource ${i + 1}`}</strong>
+            <button
+              type="button"
+              className="cms-btn cms-btn-danger"
+              onClick={() =>
+                setContent((c) => ({
+                  ...c,
+                  resources: (c.resources || []).filter((_, j) => j !== i),
+                }))
+              }
+            >
+              Remove
+            </button>
+          </div>
+          <Field
+            label="Title"
+            value={r.title}
+            onChange={(v) =>
+              setContent((c) => {
+                const list = [...(c.resources || [])];
+                list[i] = { ...list[i], title: v };
+                return { ...c, resources: list };
+              })
+            }
+          />
+          <Field
+            label="Description"
+            value={r.description}
+            onChange={(v) =>
+              setContent((c) => {
+                const list = [...(c.resources || [])];
+                list[i] = { ...list[i], description: v };
+                return { ...c, resources: list };
+              })
+            }
+            multiline
+          />
+          <div className="cms-row">
+            <Field
+              label="Category"
+              value={r.category}
+              onChange={(v) =>
+                setContent((c) => {
+                  const list = [...(c.resources || [])];
+                  list[i] = { ...list[i], category: v };
+                  return { ...c, resources: list };
+                })
+              }
+            />
+            <Field
+              label="Kind (pdf | image | link)"
+              value={r.kind}
+              onChange={(v) =>
+                setContent((c) => {
+                  const list = [...(c.resources || [])];
+                  list[i] = {
+                    ...list[i],
+                    kind: (v as ResourceItem["kind"]) || "pdf",
+                  };
+                  return { ...c, resources: list };
+                })
+              }
+            />
+          </div>
+          <Field
+            label="URL or path"
+            value={r.url}
+            onChange={(v) =>
+              setContent((c) => {
+                const list = [...(c.resources || [])];
+                list[i] = { ...list[i], url: v };
+                return { ...c, resources: list };
+              })
+            }
+          />
+          <div className="cms-field">
+            <label>Upload PDF or image</label>
+            <input
+              type="file"
+              accept="application/pdf,image/jpeg,image/png,image/webp,image/gif,.pdf"
+              disabled={uploading}
+              onChange={(e) => onUpload(i, e.target.files?.[0] || null)}
+            />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

@@ -87,6 +87,7 @@ export const defaultContent: SiteContent = {
     { href: "#courses", label: "Courses" },
     { href: "#route", label: "The Route" },
     { href: "#pricing", label: "Pricing" },
+    { href: "#resources", label: "Resources" },
     { href: "#instructors", label: "Instructors" },
     { href: "#wall", label: "Wall of Passes" },
     { href: "#faq", label: "FAQ" },
@@ -334,6 +335,18 @@ export const defaultContent: SiteContent = {
     },
   ],
   wallOfPasses: [],
+  resources: [
+    {
+      id: "kenya-learner-handbook-lmv",
+      title: "Kenya Learner Driver Handbook — Light Motor Vehicle",
+      description:
+        "Official-style learner handbook for light motor vehicles. Study alongside your theory classes and keep it handy before the NTSA test.",
+      kind: "pdf",
+      url: "/documents/KENYA-LEARNER-DRIVER-HANDBOOK-Light-Motor-Vehicle.pdf",
+      category: "Handbooks",
+      addedAt: "2026-07-29",
+    },
+  ],
   courseSelectOptions: [
     { value: "A1 – Moped", label: "A1 — Moped", duration: "Package: 16,000 KES" },
     {

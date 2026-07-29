@@ -21,7 +21,7 @@ values (
   'cms-media',
   true,
   5242880,
-  array['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+  array['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf']
 )
 on conflict (id) do update set
   public = excluded.public,

@@ -12,7 +12,7 @@ function ensureDir() {
 }
 
 function withDefaults(parsed: Partial<SiteContent>): SiteContent {
-  return {
+  const merged: SiteContent = {
     ...defaultContent,
     ...parsed,
     site: { ...defaultContent.site, ...(parsed.site || {}) },
@@ -22,7 +22,21 @@ function withDefaults(parsed: Partial<SiteContent>): SiteContent {
       ...defaultContent.passesTicker,
       ...(parsed.passesTicker || {}),
     },
+    resources:
+      parsed.resources !== undefined
+        ? parsed.resources
+        : defaultContent.resources,
   };
+
+  // Ensure Resources nav link exists for older CMS documents
+  if (!merged.navLinks.some((l) => l.href === "#resources")) {
+    const faqIdx = merged.navLinks.findIndex((l) => l.href === "#faq");
+    const link = { href: "#resources", label: "Resources" };
+    if (faqIdx >= 0) merged.navLinks.splice(faqIdx, 0, link);
+    else merged.navLinks.push(link);
+  }
+
+  return merged;
 }
 
 export function cmsBackend(): "file" | "supabase" {

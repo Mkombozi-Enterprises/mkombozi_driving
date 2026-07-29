@@ -10,7 +10,7 @@ import {
   sessionCookieOptions,
 } from "@/lib/cms/auth";
 import { cmsBackend, loadContent, saveContent } from "@/lib/cms/store";
-import { uploadCmsImage } from "@/lib/cms/upload";
+import { uploadCmsImage, uploadCmsResource } from "@/lib/cms/upload";
 import type { SiteContent } from "@/lib/cms/types";
 
 export async function cmsLogin(
@@ -89,6 +89,34 @@ export async function uploadInstructorPhotoAction(
     return { ok: true, url };
   } catch (err) {
     console.error("[cms] upload failed", err);
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : "Upload failed.",
+    };
+  }
+}
+
+/** Upload PDF or image for Resource Center (Supabase Storage or public/documents). */
+export async function uploadResourceFileAction(
+  formData: FormData
+): Promise<
+  | { ok: true; url: string; kind: "pdf" | "image" }
+  | { ok: false; error: string }
+> {
+  if (!(await isCmsAuthenticated())) {
+    return { ok: false, error: "Unauthorized" };
+  }
+
+  const file = formData.get("file");
+  if (!(file instanceof File) || file.size === 0) {
+    return { ok: false, error: "No file selected." };
+  }
+
+  try {
+    const { url, kind } = await uploadCmsResource(file);
+    return { ok: true, url, kind };
+  } catch (err) {
+    console.error("[cms] resource upload failed", err);
     return {
       ok: false,
       error: err instanceof Error ? err.message : "Upload failed.",

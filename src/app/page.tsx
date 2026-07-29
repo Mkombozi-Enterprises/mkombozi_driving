@@ -15,6 +15,7 @@ import {
   InstructorsSection,
   OriginSection,
   PricingSection,
+  ResourcesSection,
   RouteSection,
   WallSection,
 } from "@/components/Sections";
@@ -42,6 +43,7 @@ export default async function HomePage() {
           <RouteSection />
           <FleetSection />
           <PricingSection />
+          <ResourcesSection />
           <InstructorsSection />
           <WallSection />
           <FAQSection />

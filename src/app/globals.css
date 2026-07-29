@@ -125,6 +125,9 @@ select {
   max-width: var(--container);
   margin: 0 auto;
   padding: 0 var(--pad);
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 /* Page shell leaves room for Journey Spine on wide screens */
@@ -1777,6 +1780,15 @@ body.menu-open {
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
   gap: clamp(30px, 5vw, 56px);
+  /* Prevent grid children from forcing horizontal overflow */
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.contact-grid > * {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .contact-info-list {
@@ -1784,17 +1796,26 @@ body.menu-open {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
 }
 
 .contact-info-item {
   display: flex;
   gap: 14px;
   align-items: flex-start;
+  min-width: 0;
 }
 
 .contact-info-item .icon {
   color: var(--highway);
   margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.contact-info-item > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .contact-info-item b {
@@ -1816,10 +1837,12 @@ body.menu-open {
   overflow: hidden;
   border: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
+  max-width: 100%;
 }
 
 .map-wrap iframe {
   width: 100%;
+  max-width: 100%;
   height: 260px;
   border: 0;
   display: block;
@@ -1830,8 +1853,14 @@ body.menu-open {
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  padding: clamp(26px, 4vw, 40px);
+  padding: clamp(20px, 4vw, 40px);
   box-shadow: var(--shadow-sm);
+  /* Card must never exceed viewport on mobile */
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-x: clip;
 }
 
 .form-row {
@@ -1839,6 +1868,9 @@ body.menu-open {
   grid-template-columns: 1fr 1fr;
   gap: 16px;
   margin-bottom: 16px;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
 }
 
 .field {
@@ -1846,6 +1878,8 @@ body.menu-open {
   flex-direction: column;
   gap: 6px;
   margin-bottom: 16px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .field label {
@@ -1859,12 +1893,24 @@ body.menu-open {
 .field input,
 .field select,
 .field textarea {
+  /* Critical: default form controls have large intrinsic min-width and overflow */
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   padding: 13px 14px;
   border: 1.5px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--dust);
   transition: border-color 0.2s ease;
   color: var(--ink);
+  font-size: 16px; /* avoid iOS zoom + layout jank */
+}
+
+.field select {
+  /* Long option labels must not expand the card */
+  text-overflow: ellipsis;
 }
 
 .field input:focus,
@@ -1877,6 +1923,13 @@ body.menu-open {
 .field textarea {
   resize: vertical;
   min-height: 100px;
+}
+
+.contact-form .btn-block {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  white-space: normal;
 }
 
 .form-success {
@@ -2116,6 +2169,18 @@ body.menu-open {
   .about-grid,
   .contact-grid {
     grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .contact-form {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Two-column name/phone is too tight on phones in landscape / mid widths */
+  .form-row {
+    grid-template-columns: 1fr;
   }
 
   .service-grid {
@@ -2203,13 +2268,25 @@ body.menu-open {
     grid-template-columns: 1fr;
   }
 
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-
   .stat-row {
     grid-template-columns: 1fr 1fr;
     gap: 14px 12px;
+  }
+
+  #contact .container {
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  .contact-form {
+    padding: 18px 14px;
+    border-radius: var(--radius-md);
+  }
+
+  .contact-form .btn {
+    white-space: normal;
+    font-size: 0.9rem;
+    padding: 14px 16px;
   }
 
   .stat b {
@@ -2738,6 +2815,109 @@ body.menu-open {
   border: 1.5px solid var(--slate);
   margin-top: 6px;
   flex-shrink: 0;
+}
+
+/* ============ RESOURCE CENTRE ============ */
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.resource-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.resource-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--indicator);
+}
+
+.resource-card__top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.resource-kind {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--tarmac);
+  color: var(--indicator);
+}
+
+.resource-kind--pdf {
+  background: #3d1f1a;
+  color: #f0b090;
+}
+
+.resource-kind--image {
+  background: var(--highway-soft);
+  color: var(--highway);
+}
+
+.resource-kind--link {
+  background: #eaf0f8;
+  color: var(--route-blue-light, #1a7a64);
+}
+
+.resource-cat {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--slate);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.resource-card__title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.resource-card__desc {
+  color: var(--slate);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  flex: 1;
+  margin: 0;
+}
+
+.resource-card__actions {
+  margin-top: 8px;
+}
+
+.resources-empty {
+  text-align: center;
+  color: var(--slate);
+  max-width: 40ch;
+  margin: 0 auto;
+}
+
+@media (max-width: 980px) {
+  .resources-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Instructor photo / silhouette + years badge */

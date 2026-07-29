@@ -552,6 +552,75 @@ export function WallSection() {
   );
 }
 
+export function ResourcesSection() {
+  const { resources } = useSiteContent();
+
+  return (
+    <section className="section-pad bg-chalk" id="resources">
+      <div className="container">
+        <Reveal className="section-head center">
+          <span className="eyebrow">Resource Centre</span>
+          <h2 className="headline">Study materials for the road ahead</h2>
+          <p className="sub">
+            Handbooks, guides, and reference images you can open or download — free for
+            our learners and anyone preparing for an NTSA test.
+          </p>
+        </Reveal>
+
+        {resources.length === 0 ? (
+          <Reveal>
+            <p className="resources-empty">
+              Resources will appear here soon. Ask the yard team for study materials in
+              the meantime.
+            </p>
+          </Reveal>
+        ) : (
+          <div className="resources-grid">
+            {resources.map((r, i) => (
+              <Reveal
+                key={r.id}
+                className="resource-card"
+                delay={((i % 3) + 1) as 1 | 2 | 3}
+              >
+                <div className="resource-card__top">
+                  <span
+                    className={`resource-kind resource-kind--${r.kind}`}
+                    aria-hidden
+                  >
+                    {r.kind === "pdf" ? "PDF" : r.kind === "image" ? "IMG" : "LINK"}
+                  </span>
+                  {r.category ? (
+                    <span className="resource-cat">{r.category}</span>
+                  ) : null}
+                </div>
+                <h3 className="resource-card__title">{r.title}</h3>
+                {r.description ? (
+                  <p className="resource-card__desc">{r.description}</p>
+                ) : null}
+                <div className="resource-card__actions">
+                  <a
+                    href={r.url}
+                    className="btn btn-primary btn-small"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download={r.kind === "pdf" ? true : undefined}
+                  >
+                    {r.kind === "pdf"
+                      ? "Open / download PDF"
+                      : r.kind === "image"
+                        ? "View image"
+                        : "Open link"}
+                  </a>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 export function FAQSection() {
   const { faqs } = useSiteContent();
   return (

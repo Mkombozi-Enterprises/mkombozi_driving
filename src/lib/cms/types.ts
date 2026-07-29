@@ -133,6 +133,21 @@ export type PassesTicker = {
   emptyCta: string;
 };
 
+/** Downloadable or viewable resource (PDF, image, or link) */
+export type ResourceItem = {
+  id: string;
+  title: string;
+  description: string;
+  /** pdf | image | link */
+  kind: "pdf" | "image" | "link";
+  /** Public URL or path e.g. /documents/file.pdf */
+  url: string;
+  /** Optional category label for filtering */
+  category: string;
+  /** ISO date string */
+  addedAt: string;
+};
+
 export type SiteContent = {
   version: number;
   updatedAt: string;
@@ -151,6 +166,7 @@ export type SiteContent = {
   instructors: Instructor[];
   faqs: FaqItem[];
   wallOfPasses: WallPass[];
+  resources: ResourceItem[];
   courseSelectOptions: CourseSelectOption[];
 };
 
@@ -170,4 +186,5 @@ export type CmsSectionKey =
   | "instructors"
   | "faqs"
   | "wallOfPasses"
+  | "resources"
   | "courseSelectOptions";
