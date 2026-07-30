@@ -60,75 +60,79 @@ export function Hero({ hasHeroPhoto = false }: HeroProps) {
 
   return (
     <section className="hero" id="home">
-      <div className="container hero-inner">
-        <div className="hero-copy">
-          <span className="eyebrow hero-eyebrow">NTSA-Certified · Kakamega County</span>
-          <TimeGreeting />
-          <h1>
-            <span className="line">Your road to</span>
-            <span className="line accent">independence.</span>
-          </h1>
-          <p className="hero-sub">
-            Mkombozi means <em>liberator</em> — and that&apos;s exactly what a driving
-            licence gives you. {site.heroSub}
-          </p>
-          {weekLabel ? (
-            <p className="passes-ticker" role="status">
-              {weekLabel}
+      {/*
+        Full-bleed right media (mirrors footer logo panel on the left):
+        copy stays in the content column; photo stretches full hero height
+        and to the far right edge of the viewport on large screens.
+      */}
+      <div className="hero-band">
+        <div className="hero-copy-panel">
+          <div className="hero-copy">
+            <span className="eyebrow hero-eyebrow">
+              NTSA-Certified · Kakamega County
+            </span>
+            <TimeGreeting />
+            <h1>
+              <span className="line">Your road to</span>
+              <span className="line accent">independence.</span>
+            </h1>
+            <p className="hero-sub">
+              Mkombozi means <em>liberator</em> — and that&apos;s exactly what a
+              driving licence gives you. {site.heroSub}
             </p>
-          ) : (
-            <p className="passes-ticker passes-ticker--soft">
-              {passesTicker.emptyCta}
-            </p>
-          )}
-          <div className="hero-ctas">
-            <a href="#contact" className="btn btn-primary">
-              Book Your First Lesson
-            </a>
-            <a href="#courses" className="btn btn-ghost">
-              See Our Courses
-            </a>
-          </div>
-          <div className="stat-row" ref={rowRef}>
-            <div className="stat">
-              <b className="stat-num" data-target="1200" data-suffix="+">
-                0
-              </b>
-              <span>Graduates</span>
+            {weekLabel ? (
+              <p className="passes-ticker" role="status">
+                {weekLabel}
+              </p>
+            ) : (
+              <p className="passes-ticker passes-ticker--soft">
+                {passesTicker.emptyCta}
+              </p>
+            )}
+            <div className="hero-ctas">
+              <a href="#contact" className="btn btn-primary">
+                Book Your First Lesson
+              </a>
+              <a href="#courses" className="btn btn-ghost">
+                See Our Courses
+              </a>
             </div>
-            <div className="stat">
-              <b className="stat-num" data-target="97" data-suffix="%">
-                0
-              </b>
-              <span>Pass Rate</span>
-            </div>
-            <div className="stat">
-              <b className="stat-num" data-target="12" data-suffix=" yrs">
-                0
-              </b>
-              <span>On Kenyan Roads</span>
-            </div>
-            <div className="stat">
-              <b>NTSA</b>
-              <span>Registered School</span>
+            <div className="stat-row" ref={rowRef}>
+              <div className="stat">
+                <b className="stat-num" data-target="1200" data-suffix="+">
+                  0
+                </b>
+                <span>Graduates</span>
+              </div>
+              <div className="stat">
+                <b className="stat-num" data-target="97" data-suffix="%">
+                  0
+                </b>
+                <span>Pass Rate</span>
+              </div>
+              <div className="stat">
+                <b className="stat-num" data-target="12" data-suffix=" yrs">
+                  0
+                </b>
+                <span>On Kenyan Roads</span>
+              </div>
+              <div className="stat">
+                <b>NTSA</b>
+                <span>Registered School</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="hero-media">
-          <div className="hero-media-frame">
-            <span className="hero-tick hero-tick--tl" aria-hidden />
-            <span className="hero-tick hero-tick--tr" aria-hidden />
-            <span className="hero-tick hero-tick--bl" aria-hidden />
-            <span className="hero-tick hero-tick--br" aria-hidden />
-
+        <div className="hero-media-panel" aria-label="Training photo">
+          <span className="hero-media-panel__fill" aria-hidden={!hasHeroPhoto}>
             {hasHeroPhoto ? (
               <Image
                 src="/images/hero.jpg"
                 alt="Mkombozi learner training in a dual-control vehicle, Kakamega County"
                 fill
                 priority
-                sizes="(max-width: 980px) 90vw, 480px"
+                sizes="(max-width: 980px) 100vw, 48vw"
                 className="hero-media-photo"
               />
             ) : (
@@ -149,16 +153,15 @@ export function Hero({ hasHeroPhoto = false }: HeroProps) {
                 </div>
               </div>
             )}
-
-            <div className="hero-media-scrim" aria-hidden />
-            <div className="hero-media-meta">
-              <span className="hero-media-chip">Lumakanda yard</span>
-              <span className="hero-media-chip hero-media-chip--quiet">
-                Dual-control · NTSA path
-              </span>
-            </div>
+          </span>
+          <span className="hero-media-panel__grain" aria-hidden />
+          <span className="hero-media-panel__edge" aria-hidden />
+          <div className="hero-media-meta">
+            <span className="hero-media-chip">Lumakanda yard</span>
+            <span className="hero-media-chip hero-media-chip--quiet">
+              Dual-control · NTSA path
+            </span>
           </div>
-
           <p className="hero-media-note">
             {hasHeroPhoto
               ? "Training on Kenyan roads — plates kept out of frame."

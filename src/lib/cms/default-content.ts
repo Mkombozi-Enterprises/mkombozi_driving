@@ -95,37 +95,31 @@ export const defaultContent: SiteContent = {
   ],
   routeStops: [
     {
-      title: "Stop 1: Kakamega Referral (Medical)",
-      body: "Eyesight & fitness check — we point you to the right desk.",
-      mobile:
-        "Medical fitness and eyesight at the Kakamega Referral path. We tell you exactly where to go.",
-    },
-    {
-      title: "Stop 2: eCitizen / TIMS",
+      title: "eCitizen / TIMS",
       body: "Provisional licence application — we sit with you on the portal.",
       mobile:
         "We help you apply for your provisional via eCitizen's TIMS portal.",
     },
     {
-      title: "Stop 3: Highway Code at the Yard",
+      title: "Highway Code at the Yard",
       body: "Theory on our Lumakanda board — rules before roads.",
       mobile:
         "Highway Code and theory classes in the yard theory room, Lumakanda.",
     },
     {
-      title: "Stop 4: Dual-Control on Local Roads",
+      title: "Dual-Control on Local Roads",
       body: "Mumias Road, Chevaywa–Matete, market traffic — real Kakamega pace.",
       mobile:
         "Behind the wheel on local roads: Mumias Road corridors, market traffic, dual-control safety.",
     },
     {
-      title: "Stop 5: NTSA Kakamega Office",
+      title: "NTSA Kakamega Office",
       body: "We book and prep you for theory & practical at the county office.",
       mobile: "Test booking and prep for NTSA Kakamega — theory and practical.",
     },
     {
-      title: "Stop 6: The Open Road (Mumias Road → anywhere)",
-      body: "Smart licence in hand. First solo drive is yours to choose.",
+      title: "The Open Road",
+      body: "Smart licence in hand. First solo drive is yours — Mumias Road to anywhere.",
       mobile: "You're licensed — Mumias Road to anywhere. Safari njema.",
     },
   ],

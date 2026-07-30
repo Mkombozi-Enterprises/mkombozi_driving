@@ -234,6 +234,9 @@ export function CoursesSection() {
   );
 }
 
+/** Short place tags on the road spine — never numeric “step 1, 2…” */
+const ROUTE_MARKERS = ["TIMS", "Yard", "Roads", "NTSA", "Open"] as const;
+
 export function RouteSection() {
   const { routeStops, yardToday } = useSiteContent();
   return (
@@ -241,19 +244,22 @@ export function RouteSection() {
       <div className="container">
         <Reveal className="section-head center">
           <span className="eyebrow">The Route · Kakamega geography</span>
-          <h2 className="headline">Six local stops to a licence</h2>
+          <h2 className="headline">Landmarks on the way to a licence</h2>
           <p className="sub">
-            Not a generic checklist — the path we walk with learners around Kakamega and
-            Lumakanda, including roads examiners actually use.
+            Not a checklist of chores — places and roads we actually walk with learners
+            around Kakamega and Lumakanda, including corridors examiners use.
           </p>
         </Reveal>
 
         <div className="route-desktop">
-          <div className="route-grid">
+          <div
+            className="route-grid"
+            style={{ gridTemplateColumns: `repeat(${Math.max(routeStops.length, 1)}, 1fr)` }}
+          >
             <div className="route-line" aria-hidden />
             {routeStops.map((stop, i) => {
-              const n = i + 1;
-              const cardOnTop = n % 2 === 1;
+              const cardOnTop = i % 2 === 0;
+              const marker = ROUTE_MARKERS[i] || stop.title.split(" ")[0];
               return (
                 <div className="route-col" key={stop.title}>
                   <div className="route-slot top">
@@ -264,7 +270,10 @@ export function RouteSection() {
                       </div>
                     )}
                   </div>
-                  <div className="route-badge">{n}</div>
+                  <div className="route-marker" aria-hidden>
+                    <span className="route-marker__pin" />
+                    <span className="route-marker__label">{marker}</span>
+                  </div>
                   <div className="route-slot bottom">
                     {!cardOnTop && (
                       <div className="route-card">
@@ -280,15 +289,21 @@ export function RouteSection() {
         </div>
 
         <div className="route-mobile">
-          {routeStops.map((stop, i) => (
-            <div className="route-mobile-item" key={stop.title}>
-              <div className="route-mobile-num">{i + 1}</div>
-              <div>
-                <h4>{stop.title}</h4>
-                <p>{stop.mobile}</p>
+          {routeStops.map((stop, i) => {
+            const marker = ROUTE_MARKERS[i] || stop.title.split(" ")[0];
+            return (
+              <div className="route-mobile-item" key={stop.title}>
+                <div className="route-mobile-marker" aria-hidden>
+                  <span className="route-mobile-marker__dot" />
+                  <span className="route-mobile-marker__label">{marker}</span>
+                </div>
+                <div>
+                  <h4>{stop.title}</h4>
+                  <p>{stop.mobile}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <Reveal className="test-route-note">

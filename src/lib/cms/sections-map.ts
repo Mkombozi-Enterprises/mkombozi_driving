@@ -53,7 +53,7 @@ export const CMS_MAP: CmsMapSection[] = [
     label: "Licence route stops",
     anchor: "#route",
     appearsOn: "“The Route” section (six local stops)",
-    help: "Titles and descriptions for each stop on the Kakamega licence path.",
+    help: "Place-based route landmarks (no medical stop, no step numbers). eCitizen → yard → roads → NTSA → open road.",
     order: 4,
   },
   {
